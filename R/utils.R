@@ -1,4 +1,4 @@
-#'
+#' Replace attributes that has others values in expdetails
 #'
 #' @param .data data to clean up \code{Other} values
 #' @param attribute attribute of the database. Attribute name from AgroFIMS database where a user input is stored 
@@ -67,6 +67,7 @@
 #' @param attribute attribute of the database. Attribute name from AgroFIMS database where a user input is stored 
 #' @param other_attribute Other attribute name related to \code{attribute} parameter used to store \code{Other} values or non-standardized inputs. 
 #' @author Omar Benites
+#' @export
 #' @examples \dontrun{
 #' .data <- ag_get_expdetails_studyId(studyDbId = 21,format = "data.frame",
 #'                                    serverURL = "https://research.cip.cgiar.org/agrofims/api/dev",
@@ -88,7 +89,11 @@ clean_other_expdetails <- function(.data, attribute, other_attribute){
 #' @param .data data.frame table with 
 #' @param attribute character vector of databases attributes
 #' @param meta_dbattributes metadata attributes and labels in AgroFIMS
-#'
+#' @description 
+#' @author Omar Benites
+#' @description set and modify databases attributes by AgroFIMS label in order to export the fieldbook file
+#' @export
+#' 
 .modify_labels_expdetails <- function(.data, meta_dbattributes){
   
   out <- dplyr::left_join(.data,meta_dbattributes)

@@ -14,5 +14,8 @@
 \item{attribute}{character vector of databases attributes}
 }
 \description{
-Modify labels for metadata table
+set and modify databases attributes by AgroFIMS label in order to export the fieldbook file
+}
+\author{
+Omar Benites
 }
