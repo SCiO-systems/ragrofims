@@ -1,0 +1,32 @@
+Package: ragrofims
+Title: AgroFIMS functionalities into R
+Version: 0.0.1
+Authors@R: c( 
+          person("Omar E.", "Benites-Alfaro", , email = "obacc07@gmail.com",role = c("aut","cre"), c(ORCID = "0000-0002-6852-9598")),
+          person("Ivan O.", "Perez-Masias", , "ivanpe834@gmail.com", "aut"),
+          person("Peter", "Juro", , "p.juro@cgiar.org", "aut"),
+          person("Celine", "Aubert", , "c.aubert@cgiar.org", "aut"),
+          person("Medha", "Devare", , "mdevare@cgiar.org", "aut"),
+          person("International Potato Center (CIP)", role = "cph", comment = "copyright holder of the R code"),
+          person("Bioversity International (BI)", role = "cph", comment = "copyright holder of the R code"),
+          person("The International Center for Tropical Agriculture", ,role = "cph", comment = "copyright holder of the R code"),
+          person("International Food Policy Research Institute (IFPRI)", role = "cph", comment = "copyright holder of the R code")
+          )
+Description: The Agronomy Field Information Management System (AgroFIMS) levels up the data collection of agronomic studies through data standarization, ontolgies
+             and the use web frameworks. On this premise, AgroFIMS also provides \code{ragrofims}, an R implementation of the main AgroFIMS functionalities 
+             in order to facilitate research activities in the extraction of the information using the R statistical programming languge, which is world-wide used for
+             for a large group of agronomy researchers.
+Depends: R (>= 3.3.1)
+Imports: data.table,
+         doBy,
+         tidyr,
+         date,
+         dplyr,
+         lubridate,
+         R6
+Remotes: AGROFIMS/ragapi
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+Suggests: testthat
