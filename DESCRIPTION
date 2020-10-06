@@ -23,6 +23,7 @@ Imports: data.table,
          date,
          dplyr,
          lubridate,
+         tibble,
          R6
 Remotes: AGROFIMS/ragapi
 License: MIT + file LICENSE
