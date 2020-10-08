@@ -16,7 +16,7 @@ Description: The Agronomy Field Information Management System (AgroFIMS) levels 
              and the use web frameworks. On this premise, AgroFIMS also provides \code{ragrofims}, an R implementation of the main AgroFIMS functionalities 
              in order to facilitate research activities in the extraction of the information using the R statistical programming languge, which is world-wide used for
              for a large group of agronomy researchers.
-Depends: R (>= 3.3.1)
+Depends: R (>= 3.4.1)
 Imports: data.table,
          doBy,
          tidyr,
