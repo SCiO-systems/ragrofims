@@ -10,7 +10,7 @@
 #'                                    version ="/0212/r")
 #' .data. <- .replace_other_attribute_expdetails(.data, "experimentType" ,"experimentTypeOther")
 #' }
-#'   
+#' @export
 .replace_other_attribute_expdetails <- function(.data, attribute, other_attribute){
     
     value <- .data[.data$DbAttribute == attribute,"Value"]
@@ -54,6 +54,7 @@
 #'                                    version ="/0212/r")
 #' .data. <- .remove_other_exdetails(.data, "experimentTypeOther")
 #' }
+#' @export
 .remove_other_exdetails <- function(.data, other_attribute){
   pos <- .get_other_rowpos_expdetails(.data, other_attribute)
   .data <- .data[-pos, ] 

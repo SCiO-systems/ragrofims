@@ -23,7 +23,6 @@ Replace attributes that has others values in expdetails
                                    version ="/0212/r")
 .data. <- .replace_other_attribute_expdetails(.data, "experimentType" ,"experimentTypeOther")
 }
-  
 }
 \author{
 Omar Benites
