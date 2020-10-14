@@ -10,7 +10,7 @@
 #' .data <- ag_get_fundagency_studyId(studyDbId = 28,format = "data.frame",
 #'                                    serverURL = "https://research.cip.cgiar.org/agrofims/api/dev",
 #'                                    version ="/0212/r")
-#' .data <- .replace_other_attribute_funding(.data, "fundAgencyTypeId", "fundAgencyTypeOther")
+#' .data <- .replace_other_attribute_funding(.data, "fundagencytypeId", "fundagencytypeother")
 #' }
 #' @export
 #'     
@@ -36,8 +36,6 @@
 
 #' Clean labels in order to export in MS Excel format
 #' @param .data data.frame table with 
-#' @param attribute character vector of databases attributes
-#' @param meta_dbattributes metadata attributes and labels in AgroFIMS
 #' @description Functionality to clean and poolish the AGROFIMS API response.
 #' @author Omar Benites
 #' @description clean api response attributes by AgroFIMS label in order to export the fieldbook file
@@ -45,7 +43,7 @@
 #' .data <- ag_get_fundagency_studyId(studyDbId = 28,format = "data.frame",
 #'                                    serverURL = "https://research.cip.cgiar.org/agrofims/api/dev",
 #'                                    version ="/0212/r")
-#' .data <- .replace_other_attribute_funding(.data, "fundAgencyTypeId", "fundAgencyTypeOther")
+#' .data <- .replace_other_attribute_funding(.data, "fundagencytypeId", "fundagencytypeother")
 #' .data <- clean_fundagency(.data)
 #' }
 #' @export
@@ -75,7 +73,6 @@ clean_fundagency <- function(.data){
 #' Convert API-data.frame response to AgroFIMS Excel logic table
 #' 
 #' @param .data data.frame table with 
-#' @param attribute character vector of databases attributes
 #' @param meta_dbattributes metadata attributes and labels in AgroFIMS
 #' @description Transform an API table to Excel table format
 #' @author Omar Benites
@@ -86,7 +83,7 @@ clean_fundagency <- function(.data){
 #' .data <- ag_get_fundagency_studyId(studyDbId = 28,format = "data.frame",
 #'                                    serverURL = "https://research.cip.cgiar.org/agrofims/api/dev",
 #'                                    version ="/0212/r")
-#' .data <- .replace_other_attribute_funding(.data, "fundAgencyTypeId", "fundAgencyTypeOther")
+#' .data <- .replace_other_attribute_funding(.data, "fundagencytypeId", "fundagencytypeother")
 #' .data <- clean_fundagency(.data)
 #' .data <- convert_to_xlsx_fundagency(.data)
 #' }
@@ -112,5 +109,31 @@ convert_to_xlsx_fundagency <- function(.data, meta_dbattributes){
   
 }
 
+
+#' Get metadata from funding agency
+#' 
+#' @param studyId study or experiment ID
+#' @param format type of data structure format
+#' @param serverURL database server URL
+#' @param version api version
+#' @param meta_dbattributes data dictionary of metadata. It includes equivalences between excel and database names.
+#' @description get metadata from funding agency
+#' @export
+#' 
+get_fundagency_metadata <- function(studyId = NULL, format= NULL, 
+                                    serverURL=NULL,  version = NULL,
+                                    meta_dbattributes=NULL){
+  
+  fundagency_data <- ag_get_fundagency_studyId(studyDbId = studyId,format = "data.frame",
+                                               serverURL = serverURL, version = version)
+  cond <- has_agronomic_metadata(fundagency_data)
+  if(cond){
+    fundagency_data <- clean_fundagency(fundagency_data)
+    fundagency_data <- convert_to_xlsx_fundagency(fundagency_data, meta_dbattributes)
+  } else{
+    msg <- cond
+    fundagency_data <- data.frame()
+  } 
+}
 
 

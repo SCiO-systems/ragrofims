@@ -24,8 +24,13 @@ Imports: data.table,
          dplyr,
          lubridate,
          tibble,
-         R6
-Remotes: AGROFIMS/ragapi
+         R6,
+         checkmate,
+         agricolae,
+         purrr,
+         stringr
+Remotes: AGROFIMS/ragapi,
+         reyzaguirre/st4gi
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
