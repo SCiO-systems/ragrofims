@@ -150,9 +150,10 @@ get_expdetails_metadata <- function(studyId = NULL, format= NULL,
   
 
   expdetails_data <- ragapi::ag_get_expdetails_studyId(studyDbId = studyId, format = "data.frame",
-                                                       serverURL = serverURL, version = version)  
+                                                       serverURL = serverURL, version = version)
+  
   #check if there is agronomic data under certain conditions
-  cond <- has_agronomic_metadata(expdetails_data)
+  cond <- nrow(expdetails_data)>1  #has_agronomic_metadata(expdetails_data)
   if(cond){
     expdetails_data <- clean_expdetails(expdetails_data, "experimenttype", "experimenttypeother")
     expdetails_data <- convert_to_xlsx_expdetails(expdetails_data, meta_dbattributes)    
