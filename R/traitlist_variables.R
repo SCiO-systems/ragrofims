@@ -13,24 +13,24 @@ get_agrofims_traitlist <- function(expsiteId=NULL,
                                    version = "/0248/r"
                                    ){
   
-  out1 <- ag_get_cropmea_expsiteId(expsiteId = 8,
+  out1 <- ag_get_cropmea_expsiteId(expsiteId = expsiteId,
                                    format = format,
                                    serverURL = serverURL,
                                    version =version)
   
   #TODO: FERTILZIER / management practices
   
-  out2 <- ag_get_phenomea_expsiteId(expsiteId = 8,
+  out2 <- ag_get_phenomea_expsiteId(expsiteId = expsiteId,
                                     format = format,
                                     serverURL = serverURL,
                                     version =version)
   
-  out3 <- ag_get_weather_expsiteId(expsiteId = 6,
+  out3 <- ag_get_weather_expsiteId(expsiteId = expsiteId,
                                    format = format,
                                    serverURL = serverURL,
                                    version =version)
   
-  out4 <- ag_get_soil_expsiteId(expsiteId = 6,
+  out4 <- ag_get_soil_expsiteId(expsiteId = expsiteId,
                                 format = format,
                                 serverURL = serverURL,
                                 version =version)
