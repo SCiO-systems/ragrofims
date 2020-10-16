@@ -111,7 +111,7 @@ get_experimental_design <- function(expsiteId = NULL, format=c("json","list","da
   cond2 <- ck_factor_names(.factors_data)
   cond3 <- ck_level_values(.factors_data)
   
-  if(checkmate::checkLogical(cond1,cond2,cond3)){
+  if(checkmate::testLogical(c(cond1,cond2,cond3))){
    
     fnames <- get_expdesign_factors(.factors_data) #get factor names
     flevels <- get_factorial_levels(.factors_data) #get levels 
