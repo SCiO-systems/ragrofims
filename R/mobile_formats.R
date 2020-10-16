@@ -100,13 +100,20 @@ mutate_nummeasurement_phenology <- function(traitlist){
 #'  
 agro_to_kdsmart <- function(traitlist, dictionary){
   
+  traitlist_names <- names(traitlist)
   dictionary <- dictionary %>% 
                          dplyr::filter(!is.na(kdsmart)) %>% 
+                         dplyr::filter(DbAttributes %in%  traitlist_names) %>%  
                          dplyr::select(DbAttributes, kdsmart) %>% 
                          as.data.frame(stringsAsFactors=FALSE)   
       
-  db_attributes <- dictionary$DbAttributes
+  
+  db_attributes <-  dictionary$DbAttributes 
+  
+  
   #print(db_attributes)
+  
+  #db_attributes <-  intersect(names(traitlist),dictionary$DbAttributes) #names(traitlist)
   
   traitlist <- traitlist[, db_attributes]
   names(traitlist) <-  dictionary$kdsmart

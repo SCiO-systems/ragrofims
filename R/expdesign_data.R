@@ -1,6 +1,7 @@
 #' Get experimental design factors
 #' @param .data experimental design data
-
+#' @export
+#'
 get_expdesign_factors <- function(.data){
   
   #TODO: check if there are missing data
@@ -10,17 +11,16 @@ get_expdesign_factors <- function(.data){
     .factor[i] <- .data[i,"factorname"] 
     if(.data[i,"factorname"]=="Other") {
       .factor[i] <-  .data[i,"factorother"] 
-  
     }
   }
-  .factor
+  paste0(.factor,"_f",seq.int(.factor))
 }
 
 #' Get factorial levels from experimental designs
 #' @param .data experimental design data
 #' @importFrom purrr flatten map
 #' @importFrom stringr str_split  
-#' 
+#' @export 
 
 get_factorial_levels <- function(.data){
   
@@ -33,6 +33,7 @@ get_factorial_levels <- function(.data){
         other <- .data[i,"levelnameother"] 
         .lvl[i] <- gsub(pattern = "\\|Other", replacement = "", x = .lvl[i])#remove Other
         .lvl[i] <- paste(.lvl[i],other,sep = "|") #add other value
+        
     }
   }  
   .lvl <- as.list(.lvl)
@@ -42,7 +43,7 @@ get_factorial_levels <- function(.data){
 #' Get levels from non-full-factorial experiments. 
 #' @param .data experimetal design data
 #' @description Extract levels from non-full factorial experiments such as RCBD and CRD.
-#' 
+#' @export
 #' 
 get_nonfactorial_levels <- function(.data){
   
@@ -51,7 +52,8 @@ get_nonfactorial_levels <- function(.data){
 #' Get experimental design abbreviation
 #' @param .data experimental design data
 #' @param col_name column whic has experimental design abbreviation
-
+#' @export
+#' 
 get_expdesign_abbr <- function(.data, col_name = "parametercode"){
   
   out <- unique(.data[,col_name])
@@ -63,7 +65,8 @@ get_expdesign_abbr <- function(.data, col_name = "parametercode"){
 #' Get experimental design parameters
 #' @param .data experimental design data
 #' @param abbr column whic has experimental design abbreviation
-
+#' @export
+#' 
 get_expdesign_params <- function(.data, abbr = "frcbd"){
   
   nblock <- ifelse(unique(.data[,"nblock"])=="undefined", "2", unique(.data[,"nblock"]))
@@ -92,7 +95,7 @@ get_expdesign_params <- function(.data, abbr = "frcbd"){
 #' 
 #' }
 #' @export
-
+#' 
 get_experimental_design <- function(expsiteId = NULL, format=c("json","list","data.frame"),
                             serverURL="https://research.cip.cgiar.org/agrofims/api/dev", 
                             version = "/0233/r"
@@ -104,9 +107,11 @@ get_experimental_design <- function(expsiteId = NULL, format=c("json","list","da
                               version = version,
                               )
     
-  cond <- has_agronomic_metadata(.factors_data) 
+  cond1 <- has_agronomic_metadata(.factors_data) 
+  cond2 <- ck_factor_names(.factors_data)
+  cond3 <- ck_level_values(.factors_data)
   
-  if(cond){
+  if(checkmate::checkLogical(cond1,cond2,cond3)){
    
     fnames <- get_expdesign_factors(.factors_data) #get factor names
     flevels <- get_factorial_levels(.factors_data) #get levels 
@@ -116,12 +121,11 @@ get_experimental_design <- function(expsiteId = NULL, format=c("json","list","da
     rep <-  design_params$nrep #number of replications
     ntrt <- design_params$ntrt #number of treatments
     
+    
     out <- cr_experimental_design(design_abbr, rep=rep, block=block, trt=NULL, ntrt=ntrt, 
                                   fnames=fnames,flevels=flevels)
   } else {
-    
-    out <- data.frame()
-    
+    out <- paste0(c(cond2,cond3), collase= " , ")    #data.frame()
   } 
   
   return(out)
@@ -140,7 +144,6 @@ get_experimental_design <- function(expsiteId = NULL, format=c("json","list","da
 #' @param meta_dbattributes data dictionary of metadata. It includes equivalences between excel and database names.
 #' @description get metadata from experimental details
 #' @export
-#' 
 #' 
 get_dsginfo_data <- function(expsiteId = NULL, format= NULL, 
                                   serverURL=NULL,  version = NULL,

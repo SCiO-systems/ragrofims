@@ -162,6 +162,7 @@ get_projlead_metadata <- function(studyId = NULL, format= NULL,
   cond <- has_agronomic_metadata(projlead_data) 
   
   if(cond){
+    projlead_data[,is.na(projlead_data)] <- ""
     projlead_data <- clean_projlead(projlead_data)
     projlead_data <- convert_to_xlsx_projlead(projlead_data, meta_dbattributes)
   } else{

@@ -152,6 +152,7 @@ get_projentity_metadata <- function(studyId = NULL, format= NULL,
   cond <- has_agronomic_metadata(projentity_data) 
   
   if(cond){
+    projentity_data[,is.na(projentity_data)] <- ""
     projentity_data <- clean_projentity(projentity_data)
     projentity_data <- convert_to_xlsx_projentity(projentity_data, meta_dbattributes)
   } else{

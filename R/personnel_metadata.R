@@ -22,14 +22,24 @@
   for(i in seq.int(n)){
     
     #TODO: CHECK  .data[i, attribute] is different from NULL
-    if(.data[i, attribute]=="Other"){ #Is equal to Other
-      if(!is.na(.data[i,other_attribute])){ #check if is NA
-        .data[i, attribute] <- .data[i, other_attribute]  
-      }else { #put 
-        .data[i, attribute] <- ""
-      }
-    }
-  }
+    
+    if(!is.na(.data[i, attribute]))
+    {
+        if(.data[i, attribute]=="Other"){ #Is equal to Other
+      
+          if(!is.na(.data[i,other_attribute])){ #check if is NA
+            .data[i, attribute] <- .data[i, other_attribute]  
+          
+          } 
+          else { #put 
+            
+            .data[i, attribute] <- ""
+          
+          } #end if
+          
+        }#end if
+    } #end if
+  }#end for loop
   
   .data
 }
@@ -78,19 +88,23 @@ clean_personnel <- function(.data){
     personorcid[i] <- .data[,"personorcid"][i]
     personaffiliationid[i] <- .data[,"personaffiliationid"][i]
     
-    if(.data[,"personaffiliationid"][i]=="CGIAR center"){
-      
-      personaffiliationname[i] <-  "" #.data[,"personaffiliationname"][i]
-      personaffiliationcenterid[i] <-  .data[,"personaffiliationcenterid"][i]
-      
-    } else {
-      
-      personaffiliationname[i] <- .data[,"personaffiliationname"][i]
-      personaffiliationcenterid[i] <- ""#.data[,"personaffiliationcenterid"][i]
-      
+    if(!is.na(.data[,"personaffiliationid"][i])){
+        
+          if(.data[,"personaffiliationid"][i]=="CGIAR center"){
+            
+            personaffiliationname[i] <-  "" #.data[,"personaffiliationname"][i]
+            personaffiliationcenterid[i] <-  .data[,"personaffiliationcenterid"][i]
+            
+          } else {
+            
+            personaffiliationname[i] <- .data[,"personaffiliationname"][i]
+            personaffiliationcenterid[i] <- ""#.data[,"personaffiliationcenterid"][i]
+            
+          }
+      } #end personaffiliationid          
+        
     }
     
-  }
   .data <- data.frame(persontypeid, personfirstname, personlastname, personemailaddress, personaffiliationid,
                       personaffiliationname, personaffiliationcenterid, personorcid, stringsAsFactors = FALSE)
   names(.data) <- c("persontypeid" ,"personfirstname", "personlastname", "personemailaddress",
@@ -121,31 +135,37 @@ clean_personnel <- function(.data){
 #' 
 convert_to_xlsx_personnel <- function(.data, meta_dbattributes=NULL){
   
-  
+  .data[,is.na(.data)] <- "" #replace all na with ""
   out <- vector(mode = "list",length = as.integer(nrow(.data)))
   
   for(i in seq.int(as.integer(nrow(.data))) ){
     
     out[[i]] <- as.data.frame(t(.data[i,]),stringsAsFactors=FALSE) 
     
-    if(.data[i,"personaffiliationid"]=="CGIAR center"){
-      
-      pl <- c("Person type",	"Person, first name", "Person, last name"	,"Person email",	
-              "Person, affiliation",	"Person, affiliation name",	"Organization name",	"Person, ORCID") 
-      rownames(out[[i]]) <-  paste(pl,i) # paste(pl$AgroLabelDbAttribute, i)
-      index <- 6L #exclude this column of non-cgiar centers
-      
-    } else {
-      
-      pl <- c("Person type",	"Person, first name", "Person, last name"	,"Person email",	
-              "Person, affiliation",	"Person, affiliation name",	"Organization name",	"Person, ORCID") 
-      
-      rownames(out[[i]]) <-  paste(pl,i)
-      index <- 7L   #exclude this column when users choose cgiar centers
-    }
+ 
+        
+        if(.data[i,"personaffiliationid"]=="CGIAR center"){
+          
+          pl <- c("Person type",	"Person, first name", "Person, last name"	,"Person email",	
+                  "Person, affiliation",	"Person, affiliation name",	"Organization name",	"Person, ORCID") 
+          rownames(out[[i]]) <-  paste(pl,i) # paste(pl$AgroLabelDbAttribute, i)
+          index <- 6L #exclude this column of non-cgiar centers
+          
+        } else {
+          
+          pl <- c("Person type",	"Person, first name", "Person, last name"	,"Person email",	
+                  "Person, affiliation",	"Person, affiliation name",	"Organization name",	"Person, ORCID") 
+          
+          rownames(out[[i]]) <-  paste(pl,i)
+          index <- 7L   #exclude this column when users choose cgiar centers
+      }
+      out[[i]] <- tibble::rownames_to_column(out[[i]])
+      out[[i]] <- out[[i]][-index,] #all the columns except the index values
+   
     
-    out[[i]] <- tibble::rownames_to_column(out[[i]])
-    out[[i]] <- out[[i]][-index,] #all the columns except the index values
+    
+    
+    
     
   }
   
