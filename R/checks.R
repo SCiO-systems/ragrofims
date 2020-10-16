@@ -33,11 +33,22 @@ allDoubleQuotes <-  function(.x){
   }
 }
 
+any_double_quotes <- function(.x){
+  if(length(.x)>0){
+       
+  } else {
+    FALSE
+  }
+}
+
 replaceNaCharacter <- function(.data){
   .data[is.na(.data)] <- ""
 }
 
-
-
-
+#' Detect if levels are missing
+#' @param .data 
+is_levels_complete <- function(.data){
+  #If TRUE, all levels are complete, otherwise some are missing
+  sum(match(x = .data[,"levelname"],""),na.rm = TRUE)==0 
+}
 
