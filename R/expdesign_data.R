@@ -125,12 +125,22 @@ get_experimental_design <- function(expsiteId = NULL, format=c("json","list","da
     out <- cr_experimental_design(design_abbr, rep=rep, block=block, trt=NULL, ntrt=ntrt, 
                                   fnames=fnames,flevels=flevels)
   } else {
-    out <- paste0(c(cond2,cond3), collase= " , ")    #data.frame()
+    out <- paste0(c(cond2,cond3), collapse= " , ")    #data.frame()
   } 
   
   return(out)
 
 }
+
+#' Check if a experimental design
+#' @export
+ck_expdesign <- function(expdesign){
+    
+    #check if it is a experimental design
+    # YES wheter is a  data.frame , otherwise FALSE
+    checkmate::testDataFrame(expdesign,min.rows = 1,min.cols = 2) 
+}
+
 
 
 
