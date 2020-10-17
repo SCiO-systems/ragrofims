@@ -54,3 +54,5 @@ is_levels_complete <- function(.data){
   sum(match(x = .data[,"levelname"],""),na.rm = TRUE)==0 
 }
 
+
+
