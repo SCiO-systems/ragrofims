@@ -101,10 +101,11 @@ get_experimental_design <- function(expsiteId = NULL, format=c("json","list","da
                             version = "/0233/r"
                              ){
  
-  .factors_data <- ragapi::ag_get_edsfactors_expsiteId(expsiteDbId=expsiteId, 
+  .factors_data <- ragapi::ag_get_edsfactors_expsiteId(
+                              expsiteDbId=expsiteId, 
                               format=format,
                               serverURL =  serverURL,
-                              version = version,
+                              version = version
                               )
     
   cond1 <- has_agronomic_metadata(.factors_data) 
@@ -167,11 +168,12 @@ get_dsginfo_data <- function(expsiteId = NULL, format= NULL,
                                            serverURL = serverURL, version = version)
   
   cond1 <- has_agronomic_metadata(.info_data) 
-  cond2 <- has_agronomic_metadata(.data_data) 
+  cond2 <- has_agronomic_metadata(.factors_data ) 
   
   if(cond){
-    sitedesc_data <- clean_sitedesc(sitedesc_data)
-    sitedesc_data <- convert_to_xlsx_sitedesc(sitedesc_data, meta_dbattributes)
+    #sitedesc_data[,sitedesc_data] <- ""
+    #sitedesc_data <- clean_sitedesc(sitedesc_data)
+    #sitedesc_data <- convert_to_xlsx_sitedesc(sitedesc_data, meta_dbattributes)
   } else{
     sitedesc_data <- data.frame()
   } 

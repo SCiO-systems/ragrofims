@@ -34,11 +34,13 @@ allDoubleQuotes <-  function(.x){
 }
 
 any_double_quotes <- function(.x){
+  
   if(length(.x)>0){
-       
+    return(any(stringr::str_detect(.x, "^$")==TRUE,na.rm = TRUE))     
   } else {
-    FALSE
+    return(FALSE)
   }
+  
 }
 
 replaceNaCharacter <- function(.data){

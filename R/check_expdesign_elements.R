@@ -8,7 +8,7 @@ ck_factor_names <- function(.data){
   cond1 <- checkmate::allMissing(.data[,"factorname"])
   cond2 <- checkmate::anyMissing(.data[,"factorname"])
    
-  if(cond1 & cond2){
+  if(cond1 || cond2){
     out <- "There are missing factors in your experiment. Check the design tab."
     
   } else {
@@ -28,8 +28,9 @@ ck_level_values <- function(.data){
   #check 1
   cond1 <- checkmate::allMissing(.data[,"levelname"])
   cond2 <- checkmate::anyMissing(.data[,"levelname"])
+  cond3 <- any_double_quotes(.data[,"levelname"])
   
-  if(cond1 & cond2){
+  if((cond1 || cond2) || cond3){
     out <- "There are missing levels in your experimetal design. Check the design tab."
     
   } else {
