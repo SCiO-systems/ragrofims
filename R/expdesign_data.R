@@ -16,6 +16,31 @@ get_expdesign_factors <- function(.data){
   paste0(.factor,"_f",seq.int(.factor))
 }
 
+#' Mutate levels and units
+#' @description when there exist factors which unis of measurements, this function concatenate them in one level. Ex. 30kg.
+#' @param .data experimental design data
+#' @importFrom purrr flatten map
+#' @importFrom stringr str_split  
+#' @export 
+#' 
+mutate_level_unit <- function(.data){
+  .data <- .data %>% 
+    as_tibble() %>% #as tibble data structure
+    #mutate(levelname="") %>% #all as character
+    mutate(levelnameother= case_when(
+      (levelnameother!="" && factorunit!="") ~ paste0(levelnameother, factorunit),
+      (levelnameother=="" || factorunit=="") ~ paste0(levelnameother)
+      )#end case when
+    )#end mutate  
+  .data <- .data %>% mutate(levelname = case_when(    
+    (levelname!="" && factorunit!="") ~ paste0(levelname,factorunit),
+    (levelname=="" || factorunit=="") ~ paste0(levelname),
+    )#end case when
+  )
+  .data <- .data %>% as.data.frame(stringsAsFactors=FALSE)
+}
+
+
 #' Get factorial levels from experimental designs
 #' @param .data experimental design data
 #' @importFrom purrr flatten map
@@ -25,19 +50,41 @@ get_expdesign_factors <- function(.data){
 get_factorial_levels <- function(.data){
   
   #TODO: check if there are missing data
+  
   .lvl <- vector(mode="character", length = nrow(.data))
   
   for(i in seq.int(nrow(.data))) {
+    
     .lvl[i] <- .data[i,"levelname"] 
+    
     if(grepl(pattern = "Other", .lvl[i])) {
         other <- .data[i,"levelnameother"] 
         .lvl[i] <- gsub(pattern = "\\|Other", replacement = "", x = .lvl[i])#remove Other
         .lvl[i] <- paste(.lvl[i],other,sep = "|") #add other value
-        
-    }
+    } 
   }  
+  
   .lvl <- as.list(.lvl)
   .lvl <- flatten(map(.lvl, function(x) str_split(x,pattern = "\\|")))
+  
+  for(i in seq.int(.lvl)){
+    names(.lvl) <-  paste0("lvl", .data[,"group"])
+    if(.data[i,"factorunit"]!=""){ #add unit to measurements
+      .lvl[[i]] <- paste0(.lvl[[i]],.data[i,"factorunit"])
+    }    
+  }
+  
+  n <- length(.lvl)-1
+  for(i in 1:n){
+    if(names(.lvl)[i]==names(.lvl)[i+1]){
+      .lvl[[i]] <- c(.lvl[[i]], .lvl[[i+1]])
+      .lvl[[i+1]] <- NA_character_
+    } else {
+      .lvl[[i]] <- .lvl[[i]]
+    }
+  }
+  .lvl <- .lvl %>% purrr::discard( function(x) checkmate::testScalarNA(x) )
+  
 }
 
 #' Get levels from non-full-factorial experiments. 
@@ -114,6 +161,7 @@ get_experimental_design <- function(expsiteId = NULL, format=c("json","list","da
   
   if(checkmate::testLogical(c(cond1,cond2,cond3))){
    
+    .factors_data <- replaceNaCharacter(.factors_data)    
     fnames <- get_expdesign_factors(.factors_data) #get factor names
     flevels <- get_factorial_levels(.factors_data) #get levels 
     design_abbr <- get_expdesign_abbr(.factors_data) #get design abbreviation
@@ -167,14 +215,13 @@ get_dsginfo_data <- function(expsiteId = NULL, format= NULL,
                                            format = "data.frame",
                                            serverURL = serverURL, version = version)
   
-  cond1 <- has_agronomic_metadata(.info_data) 
-  cond2 <- has_agronomic_metadata(.factors_data ) 
+  #cond1 <- has_agronomic_metadata(.info_data) 
   
   if(cond){
     #sitedesc_data[,sitedesc_data] <- ""
     #sitedesc_data <- clean_sitedesc(sitedesc_data)
     #sitedesc_data <- convert_to_xlsx_sitedesc(sitedesc_data, meta_dbattributes)
-  } else{
+  } else {
     sitedesc_data <- data.frame()
   } 
   

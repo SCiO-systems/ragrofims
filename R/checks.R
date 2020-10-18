@@ -43,8 +43,13 @@ any_double_quotes <- function(.x){
   
 }
 
+#' Replace NA character in data frames
+#' @param .data data.frame to replace NA character by double quotes \code{("")}
+#' @export
+#' 
 replaceNaCharacter <- function(.data){
   .data[is.na(.data)] <- ""
+  .data
 }
 
 #' Detect if levels are missing
@@ -53,6 +58,13 @@ is_levels_complete <- function(.data){
   #If TRUE, all levels are complete, otherwise some are missing
   sum(match(x = .data[,"levelname"],""),na.rm = TRUE)==0 
 }
+
+
+
+compress_char <- function(.data){
+
+} 
+
 
 
 
