@@ -6,6 +6,9 @@
 \usage{
 mutate_nummeasurement_phenology(traitlist)
 }
+\arguments{
+\item{traitlist}{trait list table}
+}
 \description{
 set samplesperseason and samplesperplot to 1 evaluations by default
 }

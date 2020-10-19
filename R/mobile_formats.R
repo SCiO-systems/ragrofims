@@ -69,22 +69,27 @@ mutate_variable_validation_kdsmart <- function(traitlist){
 
 ######3
 #' Mutate number of measurement per season and per plot 
+#' @param traitlist trait list table
 #' @description set samplesperseason and samplesperplot to 1 evaluations by default
-#'
+#' @export
+#' 
 mutate_nummeasurement_phenology <- function(traitlist){
   
   traitlist <- traitlist %>% 
       as_tibble() %>% #as tibble data structure
-      mutate(samplesperseason="") %>% #all as character
+      #mutate(samplesperseason="") %>% #all as character
       mutate(samplesperseason = case_when(
-                                        singularity=="crop_phenology" ~  "1"
+                                        singularity=="crop_phenology" ~  "1",
+                                        TRUE ~ samplesperseason
                                         )
-      ) %>%  
-      mutate(samplesperplot="") %>%
+      ) %>%   
+      #mutate(samplesperplot="") %>%
       mutate(samplesperplot = case_when(
-                                        singularity=="crop_phenology" ~  "1"
+                                        singularity=="crop_phenology" ~  "1",
+                                        TRUE ~ samplesperplot
                                         )
       )
+  traitlist
 } 
 
 
