@@ -4,10 +4,10 @@
 \alias{get_nonfactorial_levels}
 \title{Get levels from non-full-factorial experiments.}
 \usage{
-get_nonfactorial_levels(.data)
+get_nonfactorial_levels(.info_data)
 }
 \arguments{
-\item{.data}{experimetal design data}
+\item{.info_data}{experimetal design data}
 }
 \description{
 Extract levels from non-full factorial experiments such as RCBD and CRD.

@@ -5,15 +5,19 @@
 get_expdesign_factors <- function(.data){
   
   #TODO: check if there are missing data
-  .factor <- vector(mode="character", length = nrow(.data))
+  .factors <- vector(mode="character", length = nrow(.data))
   
   for(i in seq.int(nrow(.data))){
-    .factor[i] <- .data[i,"factorname"] 
+    .factors[i] <- .data[i,"factorname"] 
     if(.data[i,"factorname"]=="Other") {
-      .factor[i] <-  .data[i,"factorother"] 
+      .factors[i] <-  .data[i,"factorother"] 
     }
   }
-  paste0(.factor,"_f",seq.int(.factor))
+  
+  .factors <- unique(paste0(.factors, .data[,"group"]))#keep unique values
+  .factors <- gsub(pattern = "_(\\d+)$", "", x = .factors) #remove unncesary chars
+  .factors <- paste0(.factors,"_f", seq.int(.factors)) #factor names
+   
 }
 
 #' Mutate levels and units
@@ -88,11 +92,19 @@ get_factorial_levels <- function(.data){
 }
 
 #' Get levels from non-full-factorial experiments. 
-#' @param .data experimetal design data
+#' @param .info_data experimetal design data
 #' @description Extract levels from non-full factorial experiments such as RCBD and CRD.
 #' @export
 #' 
-get_nonfactorial_levels <- function(.data){
+get_nonfactorial_levels <- function(.info_data){
+  
+ 
+  #Extract treatment column
+  trt <- .info_data %>% dplyr::filter(DbAttribute=="treatment") %>% 
+                        dplyr::select(Value) %>% 
+                        dplyr::nth(1)
+  trt <- stringr::str_split(trt , pattern = "\\|")[[1]] %>% 
+         stringr::str_replace_all(pattern = "[:space:]", replacement = "_")
   
 }
 
@@ -145,7 +157,7 @@ get_expdesign_params <- function(.data, abbr = "frcbd"){
 #' 
 get_experimental_design <- function(expsiteId = NULL, format=c("json","list","data.frame"),
                             serverURL="https://research.cip.cgiar.org/agrofims/api/dev", 
-                            version = "/0233/r"
+                            version = "/0253/r"
                              ){
  
   .factors_data <- ragapi::ag_get_edsfactors_expsiteId(
@@ -155,6 +167,12 @@ get_experimental_design <- function(expsiteId = NULL, format=c("json","list","da
                               version = version
                               )
     
+  .info_data <- ragapi::ag_get_edsinfo_expsiteId(expsiteDbId = expsiteId,
+                                                 format = format,
+                                                 serverURL = serverURL, version = version)
+  
+  
+  
   cond1 <- has_agronomic_metadata(.factors_data) 
   cond2 <- ck_factor_names(.factors_data)
   cond3 <- ck_level_values(.factors_data)
@@ -166,13 +184,14 @@ get_experimental_design <- function(expsiteId = NULL, format=c("json","list","da
     flevels <- get_factorial_levels(.factors_data) #get levels 
     design_abbr <- get_expdesign_abbr(.factors_data) #get design abbreviation
     design_params <- get_expdesign_params(.factors_data) #get parameters from design
+    trt <- get_nonfactorial_levels(.info_data = .info_data)#get treatment
     block <-  design_params$nblock #number of blocks 
     rep <-  design_params$nrep #number of replications
     ntrt <- design_params$ntrt #number of treatments
     
-    
-    out <- cr_experimental_design(design_abbr, rep=rep, block=block, trt=NULL, ntrt=ntrt, 
+    out <- cr_experimental_design(design_abbr, rep=rep, block=block, trt=trt, ntrt=ntrt, 
                                   fnames=fnames,flevels=flevels)
+    
   } else {
     out <- paste0(c(cond2,cond3), collapse= " , ")    #data.frame()
   } 
