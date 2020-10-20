@@ -78,16 +78,21 @@ get_factorial_levels <- function(.data){
     }    
   }
   
-  n <- length(.lvl)-1
-  for(i in 1:n){
-    if(names(.lvl)[i]==names(.lvl)[i+1]){
-      .lvl[[i]] <- c(.lvl[[i]], .lvl[[i+1]])
-      .lvl[[i+1]] <- NA_character_
-    } else {
-      .lvl[[i]] <- .lvl[[i]]
+  #When there is only one factor, skip this next step
+  if(length(.lvl)>1){ 
+    n <- length(.lvl)-1
+    for(i in 1:n){
+      if(names(.lvl)[i]==names(.lvl)[i+1]){
+        .lvl[[i]] <- c(.lvl[[i]], .lvl[[i+1]])
+        .lvl[[i+1]] <- NA_character_
+      } else {
+        .lvl[[i]] <- .lvl[[i]]
+      }
     }
+    .lvl <- .lvl %>% purrr::discard( function(x) checkmate::testScalarNA(x) )    
   }
-  .lvl <- .lvl %>% purrr::discard( function(x) checkmate::testScalarNA(x) )
+  
+  .lvl
   
 }
 

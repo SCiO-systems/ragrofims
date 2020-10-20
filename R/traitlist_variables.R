@@ -19,6 +19,11 @@ get_agrofims_traitlist <- function(expsiteId=NULL,
                                    version =version)
   
   #TODO: FERTILZIER / management practices
+  out5 <- ragapi::ag_get_manprac_expsiteId(expsiteDbId = expsiteId,
+                                           format = format,
+                                           serverURL = serverURL,
+                                           version =version)
+  
   
   out2 <- ag_get_phenomea_expsiteId(expsiteDbId = expsiteId,
                                     format = format,
@@ -35,15 +40,18 @@ get_agrofims_traitlist <- function(expsiteId=NULL,
                                 serverURL = serverURL,
                                 version =version)
   
-  traitlist_dt <- data.table::rbindlist(list(out1,out2,out3,out4),use.names = TRUE,fill = TRUE) %>% 
+  traitlist_dt <- data.table::rbindlist(list(out1,out2,out5,out3,out4),use.names = TRUE,fill = TRUE) %>% 
                   as.data.frame(stringsAsFactors=FALSE)
   
-  if(nrow(traitlist_dt)>0){
+  if(nrow(traitlist_dt)>0 && nrow(out1)>0){
     #Variable Name
     traitlist_dt <- mutate_variable_name(traitlist_dt)
     #Mutate timing values
     traitlist_dt <- mutate_timming_values(traitlist_dt)
     traitlist_dt <- mutate_nummeasurement_phenology(traitlist_dt)
+    
+    #traitlist_dt <- get_manprac_actualplan(traitlist_dt)
+    traitlist_dt <- flatten_manprac_actualplan(traitlist_dt)
     traitlist_dt$AgroFIMSId <- 1:nrow(traitlist_dt)
     traitlist_dt$VariableId <- 1:nrow(traitlist_dt)
   } else{

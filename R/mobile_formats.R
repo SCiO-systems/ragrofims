@@ -7,17 +7,21 @@
 
 mutate_timming_values <- function(traitlist){
   
-  traitlist <- traitlist %>% 
-    dplyr::as_tibble() %>% 
-    dplyr::mutate(meaTimeValue="") %>% 
-    dplyr::mutate(meaTimeValue= dplyr::case_when(
-                                        timing =="Days after planting" ~ as.character(timingdaysafterplanting),
-                                        timing =="Growth stage" ~ as.character(timinggrowthstage),
-                                        timing =="Frequency" ~ as.character(timingfrequency),
-                                        timing =="Date" ~ as.character(timingdate),
-                                        timing =="Other" ~ as.character(timingother),
-                                        TRUE ~ NA_character_)
-                  )
+  #si solo hay filas de man prac
+    
+    traitlist <- traitlist %>% 
+      dplyr::as_tibble() %>% 
+      dplyr::mutate(meaTimeValue="") %>% 
+      dplyr::mutate(meaTimeValue= dplyr::case_when(
+        timing =="Days after planting" ~ as.character(timingdaysafterplanting),
+        timing =="Growth stage" ~ as.character(timinggrowthstage),
+        timing =="Frequency" ~ as.character(timingfrequency),
+        timing =="Date" ~ as.character(timingdate),
+        timing =="Other" ~ as.character(timingother),
+        TRUE ~ NA_character_)
+      )
+  
+  traitlist
 }
 
 #test 1: to_timming_kdsmart(ncol(2),2)
@@ -93,8 +97,53 @@ mutate_nummeasurement_phenology <- function(traitlist){
 } 
 
 
-#####
+#' Flatten management practices table to retrieve actual plan evaluations (in trait list)
+#' 
+#' @param traitlist_dt data.frame trait list table
+#' @export
+#' 
+flatten_manprac_actualplan <- function(traitlist_dt){
+  
+  #extrat manprac_actualplan data
+  manprac_dt <- traitlist_dt %>% dplyr::filter(singularity=="management_practices")
+  dup_row_index <-which(duplicated (paste0(manprac_dt$cropcommonname, manprac_dt$measurement, manprac_dt$indexorder, 
+         manprac_dt$measurement, manprac_dt$variableName)))
+  #dup_row_index <- which(duplicated(paste0(manprac_dt$,manprac_dt$measurement)))
+  if(nrow(manprac_dt)>0 && length(dup_row_index)>0){
+    #Find duplicates values
+    #dup_row_index <- which(duplicated(manprac_dt$variableName))
+    manprac_dt <- manprac_dt[-dup_row_index,] #remove duplicates
+    
+    #counting of how many evaluation per variableName or measurement
+    manprac_count_dt <- traitlist_dt %>% 
+                        dplyr::count(cropcommonname, indexorder, variableName)
+    
+    manprac_dt <- dplyr::left_join(manprac_dt, manprac_count_dt)
+    manprac_dt$samplesperseason <- manprac_dt$n #assign to samplesperseason
+    manprac_dt$samplesperplot <- "1"
+    manprac_dt$n <- NULL #remove temporal column "number of evaluation"
+    
+    #Reduce 
+    traitlist_dt <- traitlist_dt %>% dplyr::filter(singularity!="management_practices")
+    traitlist_dt <- rbind(traitlist_dt, manprac_dt)
+  
+  } else if(nrow(manprac_dt)>0 && length(dup_row_index)==0){
+    manprac_dt$samplesperseason <- "1" #assign to samplesperseason
+    manprac_dt$samplesperplot <- "1"
+    traitlist_dt <- traitlist_dt %>% dplyr::filter(singularity!="management_practices")
+    traitlist_dt <- rbind(traitlist_dt, manprac_dt)
+  }  else { 
+     traitlist_dt <- traitlist_dt
+  } 
+  traitlist_dt
+} 
 
+
+
+
+
+
+#####
 #' Convert from AgroFIMS format to KDSmart trait list format
 #' 
 #' @param traitlist data.frame table of al the list of traits
@@ -115,11 +164,6 @@ agro_to_kdsmart <- function(traitlist, dictionary){
   
   db_attributes <-  dictionary$DbAttributes 
   
-  
-  #print(db_attributes)
-  
-  #db_attributes <-  intersect(names(traitlist),dictionary$DbAttributes) #names(traitlist)
-  
   traitlist <- traitlist[, db_attributes]
   names(traitlist) <-  dictionary$kdsmart
   traitlist
@@ -127,6 +171,26 @@ agro_to_kdsmart <- function(traitlist, dictionary){
 }
 
 
+#' Set names for kdsmart protocol format
+#' @param protocol_dt
+#' @export 
+#' 
+set_protocol_names_kdsmart <- function(protocol_dt, dictionary){
+ 
+  traitlist_names <- names(protocol_dt)
+  dictionary <- dictionary %>%
+                dplyr::filter(!is.na(kdsmart_protocol)) %>%
+                dplyr::filter(DbAttributes %in%  traitlist_names) %>%  
+                dplyr::select(DbAttributes, kdsmart_protocol) %>% 
+                as.data.frame(stringsAsFactors=FALSE)
+  
+  db_attributes <-  dictionary$DbAttributes 
+  
+  protocol_dt <- protocol_dt[, db_attributes]
+  names(protocol_dt) <-  dictionary$kdsmart_protocol
+  protocol_dt
+  
+}
 
 #' Convert from AgroFIMS format to Field Book App trait list format
 #' 

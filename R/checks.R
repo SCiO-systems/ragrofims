@@ -61,8 +61,10 @@ is_levels_complete <- function(.data){
 
 
 
-compress_char <- function(.data){
+check_cmea <- function(.data){
 
+   cond<- nrow(traitlist %>% dplyr::filter(singularity=="crop_measurement"))>0
+   
 } 
 
 
