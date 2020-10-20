@@ -75,7 +75,11 @@ get_factorial_levels <- function(.data){
     names(.lvl) <-  paste0("lvl", .data[,"group"])
     if(.data[i,"factorunit"]!=""){ #add unit to measurements
       .lvl[[i]] <- paste0(.lvl[[i]],.data[i,"factorunit"])
-    }    
+    } 
+    if(.data[i,"factortype"]!=""){ #add unit to measurements
+      .lvl[[i]] <- paste0(.data[i,"factortype"],.lvl[[i]])
+    } 
+    
   }
   
   #When there is only one factor, skip this next step

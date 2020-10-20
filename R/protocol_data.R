@@ -33,8 +33,8 @@ get_manprac_protocol <- function(expsiteId=NULL,
     protocol$samplesperseason <- "1"
     protocol$samplesperplot <- "1"
     protocol$AgroFIMSId <- 1:nrow(protocol)
-    protocol$VariableId <- 1:nrow(protocol)
-    protocol <- protocol
+    protocol <- protocol %>% filter(protocol=="on") %>% as.data.frame(stringsAsFactors=FALSE)
+    
   } else {
     protocol <- data.frame()
   }

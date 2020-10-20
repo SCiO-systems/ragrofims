@@ -52,8 +52,14 @@ get_agrofims_traitlist <- function(expsiteId=NULL,
     
     #traitlist_dt <- get_manprac_actualplan(traitlist_dt)
     traitlist_dt <- flatten_manprac_actualplan(traitlist_dt)
+    manprac_dt_on <- traitlist_dt %>% dplyr::filter(managementmeasurement=="on")
+    traitlist_dt <- traitlist_dt %>% dplyr::filter(is.na(managementmeasurement))
+    traitlist_dt <- rbind(traitlist_dt , manprac_dt_on)
+    
     traitlist_dt$AgroFIMSId <- 1:nrow(traitlist_dt)
     traitlist_dt$VariableId <- 1:nrow(traitlist_dt)
+    
+    
   } else{
     traitlist_dt <- data.frame()
   } 
