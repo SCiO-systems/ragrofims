@@ -172,7 +172,8 @@ agro_to_kdsmart <- function(traitlist, dictionary){
 
 
 #' Set names for kdsmart protocol format
-#' @param protocol_dt
+#' @param protocol_dt protocol data
+#' @param dictionary dictionary to transform AgroFIMS attributes headers to KDSmart format
 #' @export 
 #' 
 set_protocol_names_kdsmart <- function(protocol_dt, dictionary){

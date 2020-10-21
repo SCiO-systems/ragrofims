@@ -6,6 +6,11 @@
 \usage{
 set_protocol_names_kdsmart(protocol_dt, dictionary)
 }
+\arguments{
+\item{protocol_dt}{protocol data}
+
+\item{dictionary}{dictionary to transform AgroFIMS attributes headers to KDSmart format}
+}
 \description{
 Set names for kdsmart protocol format
 }

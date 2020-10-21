@@ -28,8 +28,8 @@ get_manprac_protocol <- function(expsiteId=NULL,
                     nth(4)
     #number of evaluation
     neval <- seq_protocol(count_index)
-    protocol <-  protocol %>% mutate(variableName = paste0(variableName,"__",neval))
-    protocol <-  protocol %>% dplyr::filter(!is.na(value))#filter empty values
+    protocol <-  protocol %>% dplyr::mutate(variableName = paste0(variableName,"__",neval))
+    #protocol <-  protocol %>% dplyr::filter(!is.na(value))#filter empty values
     protocol$samplesperseason <- "1"
     protocol$samplesperplot <- "1"
     protocol$AgroFIMSId <- 1:nrow(protocol)

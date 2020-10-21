@@ -24,7 +24,7 @@ cr_cmeasurement_fbook <- function(design, traitlist){
   
 } 
 
-# Get crops
+#' Get crops
 #' @param traitlist data.frame trait list table
 #' @export
 #' 
