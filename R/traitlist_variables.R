@@ -44,6 +44,8 @@ get_agrofims_traitlist <- function(expsiteId=NULL,
                   as.data.frame(stringsAsFactors=FALSE)
   
   if(nrow(traitlist_dt)>0 && nrow(out1)>0){
+    #Mutate crop and new 'other crop' names
+    traitlist_dt <- mutate_crop_names(traitlist_dt)
     #Variable Name
     traitlist_dt <- mutate_variable_name(traitlist_dt)
     #Mutate timing values

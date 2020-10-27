@@ -4,10 +4,12 @@
 \alias{get_crops}
 \title{Get crops}
 \usage{
-get_crops(traitlist)
+get_crops(traitlist, singularity = "crop_measurement")
 }
 \arguments{
 \item{traitlist}{data.frame trait list table}
+
+\item{singularity}{chr Types of variables. Ex. \code{crop_measurement}, \code{crop_phenology}, \code{management_practices} and \code{weather}}
 }
 \description{
 Get crops

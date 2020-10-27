@@ -2,7 +2,7 @@
 % Please edit documentation in R/mobile_formats.R
 \name{mutate_variable_name}
 \alias{mutate_variable_name}
-\title{Mutate multiple timing values for trait list table}
+\title{Mutate variable names for concatenation of variables and units}
 \usage{
 mutate_variable_name(traitlist)
 }

@@ -5,6 +5,18 @@
 #' @importFrom dplyr mutate as_tibble case_when
 #' @export
 
+mutate_crop_names <- function(traitlist){
+  
+  traitlist <- traitlist %>% dplyr::mutate(
+                              cropcommonname = case_when(
+                                  cropcommonname=="Other"~ as.character(cropcommonnameother),
+                                  cropcommonname=="Field-level/all plots"~ "Field",
+                                  TRUE~cropcommonname)       
+                              )
+  traitlist
+}
+
+
 mutate_timming_values <- function(traitlist){
   
   #si solo hay filas de man prac
@@ -27,7 +39,7 @@ mutate_timming_values <- function(traitlist){
 #test 1: to_timming_kdsmart(ncol(2),2)
 #test 1: to_timming_kdsmart(ncol(2),2)
 
-#' Mutate multiple timing values for trait list table
+#' Mutate variable names for concatenation of variables and units
 #' 
 #' @description AgroFIMS timing values are divided in 5 attributes or columns: Days after planting, Growth stage, Frequency,
 #' Date and Other. Therefore, this function assign in the column \code{meaTimeValue} all the different values according to each case or attribute.
@@ -41,11 +53,23 @@ mutate_variable_name <- function(traitlist){
     as_tibble() %>% #as tibble data structure
     mutate(variableName2="") %>% #all as character
     mutate(variableName2= case_when(
-      (singularity=="crop_measurement" & !is.na(unit)) ~ paste0(str_replace_all(measurement,"[:space:]","_"),"_",unit),
-      (singularity=="crop_measurement" & is.na(unit)) ~ paste0(str_replace_all(measurement,"[:space:]","_")),
-      (singularity!="crop_measurement" & !is.na(unit)) ~ paste0(variableName,"_",unit),
-      (singularity!="crop_measurement" & is.na(unit)) ~ paste0(variableName)#,
-      #TRUE ~ str_replace_all((measurement),"[:space:]","_")
+      
+      ((singularity=="crop_measurement" & !is.na(unit)) & (!is.na(cropcommonname) & !is.na(group)) ) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_",parametermeasured,"_", str_replace_all(measurement,"[:space:]","_"),"_",unit),
+      ((singularity=="crop_measurement" & is.na(unit)) & (!is.na(cropcommonname) & !is.na(parametermeasured))) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_", parametermeasured, "_", str_replace_all(measurement,"[:space:]","_")),
+      ((singularity=="crop_measurement" & is.na(unit)) & (!is.na(cropcommonname) & is.na(parametermeasured))) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_", str_replace_all(measurement,"[:space:]","_")),
+      
+      ((singularity=="management_practices" & !is.na(unit)) & (!is.na(cropcommonname))) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_", str_replace_all(measurement,"[:space:]","_"),"_",unit),
+      ((singularity=="management_practices" &  is.na(unit)) & (!is.na(cropcommonname))) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_",str_replace_all(measurement,"[:space:]","_")),
+      
+      ((singularity=="crop_phenology" & !is.na(unit)) & (!is.na(cropcommonname))) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_", str_replace_all(measurement,"[:space:]","_")),
+      ((singularity=="crop_phenology" &  is.na(unit)) & (!is.na(cropcommonname))) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_",str_replace_all(measurement,"[:space:]","_")),
+      
+      (singularity!="weather" & !is.na(unit)) ~ paste0(variableName,"_",unit),
+      (singularity!="weather" & is.na(unit)) ~ paste0(variableName),
+      
+      (singularity!="soil" & !is.na(unit)) ~ paste0(variableName,"_",unit),
+      (singularity!="soil" & is.na(unit)) ~ paste0(variableName)
+       # TRUE ~ str_replace_all((measurement),"[:space:]","_")
     )#end case when
     )#end mutate  
   traitlist <- traitlist %>% mutate(variableName=variableName2) %>% select(-variableName2)
