@@ -95,6 +95,33 @@ mutate_variable_validation_kdsmart <- function(traitlist){
         )#END MUTATE
 }
 
+
+#' Mutate variable validation attribute for KDSmart mobile application
+#' @description Mutate and assign in variableValidation attribute all the kdsmart validations according to the type of variable (DECIMAL, INTEGER, NUMERIC,DATE,TEXT)
+#' @export
+#' 
+mutate_variable_validation_fbapp <- function(traitlist){
+  
+  traitlist <- traitlist%>% 
+    as_tibble() %>% #as tibble data structure
+    mutate(variableValidation="") %>% #all as character
+    mutate(variableValidation=case_when(
+      variableDataType=="DECIMAL" ~ paste0(variableLowerLimit ," <= x <= ", variableUpperLimit),
+      variableDataType=="INTEGER" ~  paste0(variableLowerLimit ," <= x <= ", variableUpperLimit),
+      variableDataType=="CATEGORICAL" ~ as.character(variableCategory),
+      variableDataType=="TEXT" ~ "TEXT",
+      variableDataType=="DATE" ~ "DATE"
+    )#END CASE_WHEN
+    )#END MUTATE
+}
+
+
+
+
+
+
+
+
 ######3
 #' Mutate number of measurement per season and per plot 
 #' @param traitlist trait list table
@@ -217,6 +244,22 @@ set_protocol_names_kdsmart <- function(protocol_dt, dictionary){
   
 }
 
+#' Mutate \code{format} data type attribute for Field Book App compliant
+#' @param traitlist data.frame trait list table with all the variables to be measured in the field
+#' @export 
+#' 
+mutate_format_fbapp <- function(traitlist){
+  
+
+  traitlist <- traitlist %>% mutate(variableDataType = case_when(variableDataType == "DECIMAL" ~ "numeric",
+                                                                 variableDataType == "CATEGORICAL" ~ "categorical",
+                                                                 variableDataType == "TEXT" ~ "text",
+                                                                 variableDataType == "DATE" ~ "date",
+                                                                 variableDataType == "INTEGER" ~ "numeric",
+                                                                 variableDataType == "OTHER" ~ "text")
+                                    )
+}
+
 #' Convert from AgroFIMS format to Field Book App trait list format
 #' 
 #' @param traitlist data.frame table of al the list of traits
@@ -226,11 +269,40 @@ set_protocol_names_kdsmart <- function(protocol_dt, dictionary){
 #'  
 agro_to_fbapp <- function(traitlist, dictionary){
   
-  variables <- dictionary %>% 
-                dplyr::filter(!is.na(fbapp)) %>% 
-                dplyr::select(DbAttributes, fbapp)
+  traitlist_names <- names(traitlist)
+  dictionary <- dictionary %>% 
+    dplyr::filter(!is.na(fbapp)) %>% 
+    dplyr::filter(DbAttributes %in%  traitlist_names) %>%  
+    dplyr::select(DbAttributes, fbapp) %>% 
+    as.data.frame(stringsAsFactors=FALSE)   
   
-  traitlist <- mutate_timming_values(traitlist)
+  
+  db_attributes <-  dictionary$DbAttributes 
+  
+  traitlist <- traitlist[, db_attributes]
+  names(traitlist) <-  dictionary$fbapp
+  traitlist
+  
+}
+
+#' Create Field Book App template
+#' 
+#' @param design data.frame statistical design object including crop measurements
+#' @importFrom janitor remove_empty
+#' @importFrom stringr str_replace_all
+#' @export
+#'
+
+cr_fbapp <- function(design){
+  
+  names(design) <- stringr::str_replace_all(string = names(design), pattern = "µ",replacement = "u")
+  names(design) <- stringr::str_replace_all(string = names(design), pattern = "\\(",replacement = "_")
+  names(design) <- stringr::str_replace_all(string = names(design), pattern = "\\)",replacement = "_")
+  names(design) <- stringr::str_replace_all(string = names(design), pattern = "[[:space:]]",replacement = "_")
+  
+  design <- janitor::remove_empty(design, which = "cols")
+  plotid <- 1:nrow(design)
+  design <- cbind(plotid, design)
   
 }
 

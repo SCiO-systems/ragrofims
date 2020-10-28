@@ -28,7 +28,8 @@ Imports: data.table,
          checkmate,
          agricolae,
          purrr,
-         stringr
+         stringr,
+         janitor
 Remotes: AGROFIMS/ragapi,
          reyzaguirre/st4gi
 License: MIT + file LICENSE
