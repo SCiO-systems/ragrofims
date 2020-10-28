@@ -128,10 +128,11 @@ get_fundagency_metadata <- function(studyId = NULL, format= NULL,
                                                serverURL = serverURL, version = version)
   cond <- has_agronomic_metadata(fundagency_data)
   if(cond){
-    fundagency_data[,is.na(fundagency_data)] <- "" #replace all na with ""
+    #fundagency_data[,is.na(fundagency_data)] <- "" #replace all na with ""
+    fundagency_data <- fundagency_data %>% replace(is.na(.), "")
     fundagency_data <- clean_fundagency(fundagency_data)
     fundagency_data <- convert_to_xlsx_fundagency(fundagency_data, meta_dbattributes)
-  } else{
+  } else {
     msg <- cond
     fundagency_data <- data.frame()
   } 

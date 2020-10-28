@@ -135,7 +135,8 @@ clean_personnel <- function(.data){
 #' 
 convert_to_xlsx_personnel <- function(.data, meta_dbattributes=NULL){
   
-  .data[,is.na(.data)] <- "" #replace all na with ""
+  #.data[,is.na(.data)] <- "" #replace all na with ""
+  .data <- .data %>% replace(is.na(.), "")
   out <- vector(mode = "list",length = as.integer(nrow(.data)))
   
   for(i in seq.int(as.integer(nrow(.data))) ){

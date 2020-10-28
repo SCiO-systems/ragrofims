@@ -5,6 +5,7 @@
 #' @param serverURL database server URL
 #' @param version api version
 #' @importFrom ragapi ag_get_cropmea_expsiteId ag_get_phenomea_expsiteId ag_get_soil_expsiteId  ag_get_soil_expsiteId
+#' @importFrom dplyr distinct mutate count select left_join
 #' @export
 #'
 
@@ -35,13 +36,13 @@ get_manprac_protocol <- function(expsiteId=NULL,
     neval <- seq_protocol(dt_count_index$n)
     protocol <-  protocol %>% dplyr::mutate(variableName = paste0(cropcommonname,"_",measurement,"__",neval))
     #protocol <-  protocol %>% dplyr::filter(!is.na(value))#filter empty values
+    protocol <- protocol %>% dplyr::distinct() #remove duplicates
     protocol$samplesperseason <- "1"
     protocol$samplesperplot <- "1"
     protocol$n <- NULL
     #protocol$Subgroup <- "" #for KDSmart speciallys
     protocol$AgroFIMSId <- 1:nrow(protocol)
-    protocol <- protocol %>% filter(protocol=="on") %>% as.data.frame(stringsAsFactors=FALSE)
-    
+    protocol <- protocol %>% dplyr::filter(protocol=="on") %>% as.data.frame(stringsAsFactors=FALSE)
   } else {
     protocol <- data.frame()
   }
