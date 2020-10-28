@@ -153,7 +153,7 @@ get_projentity_metadata <- function(studyId = NULL, format= NULL,
   
   if(cond){
     #projentity_data[,is.na(projentity_data)] <- ""
-    projlead_data <- projlead_data %>% replace(is.na(.), "")
+    projentity_data <-  projentity_data %>% replace(is.na(.), "")
     projentity_data <- clean_projentity(projentity_data)
     projentity_data <- convert_to_xlsx_projentity(projentity_data, meta_dbattributes)
   } else{

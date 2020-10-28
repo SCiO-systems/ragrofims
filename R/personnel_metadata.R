@@ -143,8 +143,6 @@ convert_to_xlsx_personnel <- function(.data, meta_dbattributes=NULL){
     
     out[[i]] <- as.data.frame(t(.data[i,]),stringsAsFactors=FALSE) 
     
- 
-        
         if(.data[i,"personaffiliationid"]=="CGIAR center"){
           
           pl <- c("Person type",	"Person, first name", "Person, last name"	,"Person email",	
