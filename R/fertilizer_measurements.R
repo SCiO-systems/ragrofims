@@ -14,7 +14,8 @@ get_agrofims_fertproducts <- function(expsiteId=NULL,
                                     )
 {
   
-  fertproduct <- ag_get_fertmea_expsiteId(expsiteDbId = expsiteId,
+  fertproduct <- ag_get_fertmea_expsiteId(
+                                  expsiteDbId = expsiteId,
                                    format = "data.frame",
                                    serverURL = "https://research.cip.cgiar.org/agrofims/api/dev",
                                    version ="/0291/r")
@@ -37,7 +38,8 @@ get_agrofims_fertproducts <- function(expsiteId=NULL,
     #Transform to numeric
     fertproduct[,"unitvalue"] <- as.numeric(fertproduct[,"unitvalue"])
     #fertilizer <- calc_nutamount(fertilizer)
-    out <- fertproduct
+    out <- fertproduct %>% dplyr::filter(unitvalue!="")
+      
   } else {
     out <- data.frame()
   }

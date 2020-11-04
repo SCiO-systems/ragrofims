@@ -49,7 +49,24 @@ test_that("Test calculation of nutrient amount - fertilizer product submodule - 
   fertilizer <- calc_nutamount(fertilizer = out) 
   
   testthat::expect_equal(ncol(fertilizer), 17)
-  testthat::expect_equal(nrow(fertilizer), 7)
+  testthat::expect_equal(nrow(fertilizer), 6)
+  
+})
+
+
+test_that("Test calculation of nutrient amount - fertilizer product - Crop Barley ID=8 - API v0291", {
+  
+  out <- get_agrofims_fertproducts(expsiteId=8,
+                                   format = "data.frame",
+                                   serverURL = "https://research.cip.cgiar.org/agrofims/api/dev",
+                                   version = "/0291/r"
+  )
+  
+  fertilizer <- get_fertproducts_crop(fertproducts = out, crop = "Barley")
+  fertilizer <- calc_nutamount(fertilizer = fertilizer) 
+  
+  testthat::expect_equal(ncol(fertilizer), 17)
+  testthat::expect_equal(nrow(fertilizer), 1)
   
 })
 
