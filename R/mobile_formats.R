@@ -17,6 +17,8 @@ mutate_crop_names <- function(traitlist){
 }
 
 
+#' @export
+
 mutate_timming_values <- function(traitlist){
   
   #si solo hay filas de man prac
@@ -54,7 +56,7 @@ mutate_variable_name <- function(traitlist){
     mutate(variableName2="") %>% #all as character
     mutate(variableName2= case_when(
       
-      ((singularity=="crop_measurement" & !is.na(unit)) & (!is.na(cropcommonname) & !is.na(group)) ) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_",parametermeasured,"_", str_replace_all(measurement,"[:space:]","_"),"_",unit),
+      ((singularity=="crop_measurement" & !is.na(unit)) & (!is.na(cropcommonname) & !is.na(parametermeasured)) ) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_",parametermeasured,"_", str_replace_all(measurement,"[:space:]","_"),"_",unit),
       ((singularity=="crop_measurement" & is.na(unit)) & (!is.na(cropcommonname) & !is.na(parametermeasured))) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_", parametermeasured, "_", str_replace_all(measurement,"[:space:]","_")),
       ((singularity=="crop_measurement" & is.na(unit)) & (!is.na(cropcommonname) & is.na(parametermeasured))) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_", str_replace_all(measurement,"[:space:]","_")),
       

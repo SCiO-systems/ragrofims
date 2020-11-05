@@ -17,8 +17,8 @@ get_agrofims_fertproducts <- function(expsiteId=NULL,
   fertproduct <- ag_get_fertmea_expsiteId(
                                   expsiteDbId = expsiteId,
                                    format = "data.frame",
-                                   serverURL = "https://research.cip.cgiar.org/agrofims/api/dev",
-                                   version ="/0291/r")
+                                   serverURL = serverURL,
+                                   version = version)
   
   if(nrow(fertproduct)==0){
       out <- data.frame()
