@@ -48,7 +48,7 @@ mutate_timming_values <- function(traitlist){
 #' @importFrom dplyr mutate as_tibble case_when select
 #' @export
 
-mutate_variable_name <- function(traitlist){
+  mutate_variable_name <- function(traitlist){
   
   #Variable Name
   traitlist <- traitlist%>% 
@@ -58,6 +58,10 @@ mutate_variable_name <- function(traitlist){
       
       ((singularity=="crop_measurement" & !is.na(unit)) & (!is.na(cropcommonname) & !is.na(parametermeasured)) ) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_",parametermeasured,"_", str_replace_all(measurement,"[:space:]","_"),"_",unit),
       ((singularity=="crop_measurement" & is.na(unit)) & (!is.na(cropcommonname) & !is.na(parametermeasured))) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_", parametermeasured, "_", str_replace_all(measurement,"[:space:]","_")),
+      
+      ((singularity=="crop_measurement" & !is.na(unit)) & (!is.na(cropcommonname) & is.na(parametermeasured))) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_", str_replace_all(measurement,"[:space:]","_")),
+      
+      
       ((singularity=="crop_measurement" & is.na(unit)) & (!is.na(cropcommonname) & is.na(parametermeasured))) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_", str_replace_all(measurement,"[:space:]","_")),
       
       ((singularity=="management_practices" & !is.na(unit)) & (!is.na(cropcommonname))) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_", str_replace_all(measurement,"[:space:]","_"),"_",unit),
@@ -66,11 +70,11 @@ mutate_variable_name <- function(traitlist){
       ((singularity=="crop_phenology" & !is.na(unit)) & (!is.na(cropcommonname))) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_", str_replace_all(measurement,"[:space:]","_")),
       ((singularity=="crop_phenology" &  is.na(unit)) & (!is.na(cropcommonname))) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_",str_replace_all(measurement,"[:space:]","_")),
       
-      (singularity!="weather" & !is.na(unit)) ~ paste0(variableName,"_",unit),
-      (singularity!="weather" & is.na(unit)) ~ paste0(variableName),
+      (singularity=="weather" & !is.na(unit)) ~ paste0(variableName,"_",unit),
+      (singularity=="weather" & is.na(unit)) ~ paste0(variableName),
       
-      (singularity!="soil" & !is.na(unit)) ~ paste0(variableName,"_",unit),
-      (singularity!="soil" & is.na(unit)) ~ paste0(variableName)
+      (singularity=="soil" & !is.na(unit)) ~ paste0(cropcommonname,"_", str_replace_all(measurement,"[:space:]","_"), "_",unit),
+      (singularity=="soil" & is.na(unit)) ~ paste0(cropcommonname,"_", str_replace_all(measurement,"[:space:]","_"))
        # TRUE ~ str_replace_all((measurement),"[:space:]","_")
     )#end case when
     )#end mutate  
