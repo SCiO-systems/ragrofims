@@ -62,7 +62,7 @@ get_agrofims_traitlist <- function(expsiteId=NULL,
     }
     
     #traitlist_dt$AgroFIMSId <- 1:nrow(traitlist_dt)
-    traitlist_dt$VariableId <- 1:nrow(traitlist_dt)
+    
     
     
   } else{
