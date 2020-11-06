@@ -61,6 +61,7 @@ mutate_timming_values <- function(traitlist){
       
       ((singularity=="crop_measurement" & !is.na(unit)) & (!is.na(cropcommonname) & is.na(parametermeasured))) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_", str_replace_all(measurement,"[:space:]","_")),
       
+            
       
       ((singularity=="crop_measurement" & is.na(unit)) & (!is.na(cropcommonname) & is.na(parametermeasured))) ~ paste0(str_replace_all(cropcommonname,"[:space:]","_"),"_", str_replace_all(measurement,"[:space:]","_")),
       
@@ -75,7 +76,9 @@ mutate_timming_values <- function(traitlist){
       
       (singularity=="soil" & !is.na(unit)) ~ paste0(cropcommonname,"_", str_replace_all(measurement,"[:space:]","_"), "_",unit),
       (singularity=="soil" & is.na(unit)) ~ paste0(cropcommonname,"_", str_replace_all(measurement,"[:space:]","_"))
-       # TRUE ~ str_replace_all((measurement),"[:space:]","_")
+      
+      
+      # TRUE ~ str_replace_all((measurement),"[:space:]","_")
     )#end case when
     )#end mutate  
   traitlist <- traitlist %>% mutate(variableName=variableName2) %>% select(-variableName2)
