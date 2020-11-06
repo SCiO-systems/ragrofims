@@ -16,7 +16,7 @@ get_agrofims_fertproducts <- function(expsiteId=NULL,
   
   fertproduct <- ag_get_fertmea_expsiteId(
                                   expsiteDbId = expsiteId,
-                                   format = "data.frame",
+                                   format = format,
                                    serverURL = serverURL,
                                    version = version)
   
@@ -82,6 +82,7 @@ calc_nutamount <- function(fertilizer){
     meta_attributes <- c("indexorder","productvalue", "unit")
     nut_names <- c("N","P", "K","Ca","Mg","S","Mb", "Zn", "B", "Cu", "Fe", "Mn" ,"Ni","Cl")
     fertilizer <- fertilizer %>% mutate(N = unitvalue*N) %>% 
+      mutate(P = unitvalue*P) %>%
       mutate(K = unitvalue*K) %>% 
       mutate(Ca = unitvalue*Ca) %>% 
       mutate(Mg = unitvalue*Mg) %>% 

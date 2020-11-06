@@ -29,7 +29,8 @@ Imports: data.table,
          agricolae,
          purrr,
          stringr,
-         janitor
+         janitor,
+         ragapi
 Remotes: AGROFIMS/ragapi,
          reyzaguirre/st4gi
 License: MIT + file LICENSE
