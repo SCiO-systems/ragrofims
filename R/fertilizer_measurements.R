@@ -81,19 +81,19 @@ calc_nutamount <- function(fertilizer){
     
     meta_attributes <- c("indexorder","productvalue", "unit")
     nut_names <- c("N","P", "K","Ca","Mg","S","Mb", "Zn", "B", "Cu", "Fe", "Mn" ,"Ni","Cl")
-    fertilizer <- fertilizer %>% mutate(N = unitvalue*N) %>% 
-      mutate(P = unitvalue*P) %>%
-      mutate(K = unitvalue*K) %>% 
-      mutate(Ca = unitvalue*Ca) %>% 
-      mutate(Mg = unitvalue*Mg) %>% 
-      mutate(S = unitvalue*S) %>% 
-      mutate(Mb = unitvalue*Mb) %>% 
-      mutate(Zn = unitvalue*Zn) %>% 
-      mutate(B = unitvalue*B) %>% 
-      mutate(Cu = unitvalue*Cu) %>% 
-      mutate(Fe = unitvalue*Fe) %>% 
-      mutate(Mn = unitvalue*Mn) %>% 
-      mutate(Ni = unitvalue*Ni)
+    fertilizer <- fertilizer %>% mutate(N = (unitvalue*N)/100 ) %>% 
+      mutate(P = (unitvalue*P)/100) %>%
+      mutate(K = (unitvalue*K)/100) %>% 
+      mutate(Ca = (unitvalue*Ca)/100) %>% 
+      mutate(Mg = (unitvalue*Mg)/100) %>% 
+      mutate(S = (unitvalue*S)/100) %>% 
+      mutate(Mb = (unitvalue*Mb)/100) %>% 
+      mutate(Zn = (unitvalue*Zn)/100) %>% 
+      mutate(B = (unitvalue*B)/100) %>% 
+      mutate(Cu = (unitvalue*Cu)/100) %>% 
+      mutate(Fe = (unitvalue*Fe)/100) %>% 
+      mutate(Mn = (unitvalue*Mn)/100) %>% 
+      mutate(Ni = (unitvalue*Ni)/100)
     
     fertilizer <- fertilizer[,c(meta_attributes, nut_names)]
 

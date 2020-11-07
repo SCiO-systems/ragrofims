@@ -38,35 +38,36 @@ test_that("Test calculation of nutrient amount - Empty table with API v0291", {
 
 
 
-test_that("Test calculation of nutrient amount - fertilizer product submodule - ID=8 - API v0291", {
+test_that("Test calculation of nutrient amount - with Other Crop- ID=8 - API v0291", {
   
   out <- get_agrofims_fertproducts(expsiteId=8,
                                         format = "data.frame",
                                         serverURL = "https://research.cip.cgiar.org/agrofims/api/dev",
                                         version = "/0291/r"
                                         )
-
-  fertilizer <- calc_nutamount(fertilizer = out) 
+ 
+  fertilizer <- ragrofims::get_fertproducts_crop(out, crop = "omar benites") 
+  fertilizer <- calc_nutamount(fertilizer = fertilizer) 
   
   testthat::expect_equal(ncol(fertilizer), 17)
-  testthat::expect_equal(nrow(fertilizer), 6)
+  testthat::expect_equal(nrow(fertilizer), 3)
   
 })
 
 
-test_that("Test calculation of nutrient amount - fertilizer product - Crop Barley ID=8 - API v0291", {
+test_that("Test calculation of nutrient amount - fertilizer product - Crop Barley ID=18 - API v0291", {
   
-  out <- get_agrofims_fertproducts(expsiteId=8,
+  out <- get_agrofims_fertproducts(expsiteId=18,
                                    format = "data.frame",
                                    serverURL = "https://research.cip.cgiar.org/agrofims/api/dev",
                                    version = "/0291/r"
   )
   
-  fertilizer <- get_fertproducts_crop(fertproducts = out, crop = "Barley")
+  fertilizer <- get_fertproducts_crop(fertproducts = out, crop = "Cassava")
   fertilizer <- calc_nutamount(fertilizer = fertilizer) 
   
   testthat::expect_equal(ncol(fertilizer), 17)
-  testthat::expect_equal(nrow(fertilizer), 1)
+  testthat::expect_equal(nrow(fertilizer), 2)
   
 })
 
@@ -83,8 +84,8 @@ test_that("Test calculation of nutrient amount - with no products - ID=9 - API v
   
   fertilizer <- calc_nutamount(fertilizer = out) 
   
-  testthat::expect_equal(ncol(fertilizer), 0)
-  testthat::expect_equal(nrow(fertilizer), 0)
+  testthat::expect_equal(ncol(fertilizer), 17)
+  testthat::expect_equal(nrow(fertilizer), 4)
   
 })
 
