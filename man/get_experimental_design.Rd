@@ -8,7 +8,7 @@ get_experimental_design(
   expsiteId = NULL,
   format = c("json", "list", "data.frame"),
   serverURL = "https://research.cip.cgiar.org/agrofims/api/dev",
-  version = "/0253/r"
+  version = "/0291/r"
 )
 }
 \arguments{

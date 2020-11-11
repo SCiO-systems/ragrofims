@@ -6,9 +6,9 @@
 \usage{
 get_dsginfo_data(
   expsiteId = NULL,
-  format = NULL,
-  serverURL = NULL,
-  version = NULL,
+  format = c("json", "list", "data.frame"),
+  serverURL = "https://research.cip.cgiar.org/agrofims/api/dev",
+  version = "/0291/r",
   meta_dbattributes = NULL
 )
 }
@@ -25,4 +25,10 @@ get_dsginfo_data(
 }
 \description{
 get metadata from experimental details
+}
+\examples{
+\dontrun{
+meta_dbattributes <- gsheet::gsheet2tbl("https://docs.google.com/spreadsheets/d/124fPX0f_J9Ws-f4ZgSX6AyXQVbCZY50nMsuaFfPaDWg/edit#gid=997278569")
+get_dsginfo_data(expsiteId = 22, format="data.frame", serverURL = "https://research.cip.cgiar.org/agrofims/api/dev", version= "/0291/r", meta_dbattributes)
+}
 }

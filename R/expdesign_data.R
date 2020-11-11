@@ -1,4 +1,5 @@
 #' Get experimental design factors
+#' 
 #' @param .data experimental design data
 #' @export
 #'
@@ -166,7 +167,7 @@ get_expdesign_params <- function(.data, abbr = "frcbd"){
 #' 
 get_experimental_design <- function(expsiteId = NULL, format=c("json","list","data.frame"),
                             serverURL="https://research.cip.cgiar.org/agrofims/api/dev", 
-                            version = "/0253/r"
+                            version = "/0291/r"
                              ){
  
   .factors_data <- ragapi::ag_get_edsfactors_expsiteId(
@@ -175,7 +176,7 @@ get_experimental_design <- function(expsiteId = NULL, format=c("json","list","da
                               serverURL =  serverURL,
                               version = version
                               )
-    
+  
   .info_data <- ragapi::ag_get_edsinfo_expsiteId(expsiteDbId = expsiteId,
                                                  format = format,
                                                  serverURL = serverURL, version = version)
@@ -230,29 +231,180 @@ ck_expdesign <- function(expdesign){
 #' @param version api version
 #' @param meta_dbattributes data dictionary of metadata. It includes equivalences between excel and database names.
 #' @description get metadata from experimental details
+#' @examples \dontrun{
+#' meta_dbattributes <- gsheet::gsheet2tbl("https://docs.google.com/spreadsheets/d/124fPX0f_J9Ws-f4ZgSX6AyXQVbCZY50nMsuaFfPaDWg/edit#gid=997278569")
+#' get_dsginfo_data(expsiteId = 22, format="data.frame", serverURL = "https://research.cip.cgiar.org/agrofims/api/dev", version= "/0291/r", meta_dbattributes)
+#' }
 #' @export
 #' 
-get_dsginfo_data <- function(expsiteId = NULL, format= NULL, 
-                                  serverURL=NULL,  version = NULL,
-                                  meta_dbattributes=NULL){
+get_dsginfo_data <- function(expsiteId = NULL, 
+                             format=c("json","list","data.frame"),
+                             serverURL="https://research.cip.cgiar.org/agrofims/api/dev", 
+                             version = "/0291/r",
+                             meta_dbattributes=NULL){
+  
+  format <- match.arg(format)
   
   .info_data <- ragapi::ag_get_edsinfo_expsiteId(expsiteDbId = expsiteId,
                                              format = "data.frame",
                                              serverURL = serverURL, version = version)
+  
   .factors_data <- ragapi::ag_get_edsfactors_expsiteId(expsiteDbId = expsiteId,
                                            format = "data.frame",
                                            serverURL = serverURL, version = version)
   
-  #cond1 <- has_agronomic_metadata(.info_data) 
-  
-  if(cond){
-    #sitedesc_data[,sitedesc_data] <- ""
-    #sitedesc_data <- clean_sitedesc(sitedesc_data)
-    #sitedesc_data <- convert_to_xlsx_sitedesc(sitedesc_data, meta_dbattributes)
-  } else {
-    sitedesc_data <- data.frame()
+  if(nrow(.info_data)==0 ||  nrow(.factors_data)==0){
+    
+    return(data.frame())  
+    
   } 
   
+  expsiteId <- .info_data[1,"Value"]#get expsiteId
+  expunit <- .info_data[.info_data$DbAttribute=="variable","Value"]
+  
+  if(checkmate::test_false(expsiteId)){ #if there experiment-site does not exist
+    
+    out <- data.frame()
+    
+  } else {
+    
+    .factors_data <- .factors_data %>%  replace(is.na(.), "")
+    
+    meta_dbattributes <-  meta_dbattributes %>% dplyr::filter(module=="design")
+    
+    design <-  .info_data[.info_data$DbAttribute=="parametercode","Value"]
+    
+    .info_data <- dplyr::left_join(meta_dbattributes, .info_data, by="DbAttribute")
+    
+    .info_data <- .info_data %>% dplyr::mutate(Value = case_when(
+                                                        Value=="undefined" ~"",
+                                                        is.na(Value) ~ "",
+                                                        TRUE~Value
+                                                       )
+                                               )
+    
+    out <- .info_data %>% dplyr::mutate(Dependency = case_when(
+                                                    is.na(Dependency)~ "",
+                                                    TRUE~Dependency
+                                                    )
+                                        )
+    min_info <- filter_dsginfo_design(out, design,.factors_data = .factors_data)
+    unit_info <- filter_expunitinfo_design(out, expunit, design)
+    out <- rbind(min_info,unit_info) %>% dplyr::select(AgroLabelDbAttribute, Value)
+    names(out) <- c("Parameter", "Value")
+    
+  } 
+  return(out)
+}
+
+#' Filter experimental design information by design
+#' @description According to different 
+#' @param dsginfo experimetanl design information
+#' @param design experimental design
+#' @param .factors_data table of factors retrived by AgroFIMS API.
+#' @importFrom purrr map_lgl
+#' @importFrom stringr str_detect
+#' @export
+
+filter_dsginfo_design <- function(dsginfo, design,.factors_data){
+  
+  #pos <- grep(pattern = design , x = dsginfo$design_dependencies)
+  .factors_data <- tidyr::replace_na(.factors_data)
+  
+  dsginfo <- dsginfo %>% dplyr::filter(Dependency=="no")
+  design_pattern <- paste0("^", design, "$")
+  pos <- which(purrr::map_lgl(.x = dsginfo$design_dependencies,
+                       function(x) sum(stringr::str_detect(strsplit(x, "\\|")[[1]], 
+                                                           design_pattern ))>0  )==TRUE)
+  
+  dsginfo[dsginfo$DbAttribute=="nfactors", "Value"] <- nrow(.factors_data)
+  
+  
+  factors <- get_expdesign_factors(.factors_data)  
+  factors_label <- paste0("Factor ", seq.int(factors))
+  flevels <- get_factorial_levels(.factors_data) %>% purrr::map_chr(function(x)paste(x,collapse = ", ")) %>% as.list()
+  flevels_label <- paste0("Factor ", seq.int(flevels), "-Levels")
+  fvalues <- flabels <- NULL
+  for(i in 1:nrow(.factors_data)){
+      fvalues <- append(fvalues,c(factors[i],flevels[[i]]))
+      flabels <- append(flabels,c(factors_label[i],flevels_label[[i]]))
+  }
+  ftable <- data.frame(flabels, fvalues)
+  names(ftable) <- c("AgroLabelDbAttribute", "Value")
+  
+  dsginfo <- data.table::rbindlist(list(dsginfo, ftable),use.names = TRUE,fill = TRUE) %>% as.data.frame(stringsAsFactors=FALSE)
+
+  
+}
+
+
+#' Filter experimental units
+#' 
+#' @description Filter experimental unit values from AGROFIMS experiments
+#' @export
+#' 
+filter_expunitinfo_design <- function(dsginfo , expunit, design){
+  
+  dsginfo <- assign_expunit(dsginfo, "length_p", "length_unit_p")  
+  dsginfo <- assign_expunit(dsginfo, "width_p", "width_unit_p")
+  dsginfo <- assign_expunit(dsginfo, "length_f", "length_unit_f")
+  dsginfo <- assign_expunit(dsginfo, "width_f", "width_unit_f")
+  dsginfo <- assign_expunit(dsginfo, "diameter", "diameter_unit")
+  dsginfo <- assign_expunit(dsginfo, "depth", "depth_unit")
+  
+  dsginfo <- assign_expunit(dsginfo, "main_exp_plot_width", "main_exp_plot_width_unit")
+  dsginfo <- assign_expunit(dsginfo, "main_exp_plot_width", "main_exp_plot_width_unit")
+  dsginfo <- assign_expunit(dsginfo, "sub_exp_plot_length", "sub_exp_plot_length_unit")
+  dsginfo <- assign_expunit(dsginfo, "sub_exp_plot_width", "sub_exp_plot_width_unit")
+  dsginfo <- assign_expunit(dsginfo, "subsub_exp_plot_length", "subsub_exp_plot_length_unit")
+  dsginfo <- assign_expunit(dsginfo, "subsub_exp_plot_width", "subsub_exp_plot_width_unit")
+  
+  #remove rows with unit expresions, they are not neccessary
+  dsginfo <- dsginfo %>%  dplyr::filter(!grepl("unit",DbAttribute))
+  ##################
+  
+  if((design=="crd" || design=="rcbd" || design=="fcrd" || design=="frcbd") && expunit!=""){
+    
+    dsginfo <- dsginfo %>% dplyr::filter(Dependency==expunit)
+    
+  } else if((design=="crd" || design=="rcbd" || design=="fcrd" || design=="frcbd") && expunit!=""){
+    
+    expunit <- "plot"
+    dsginfo <- dsginfo %>% dplyr::filter(Dependency==expunit)
+    
+  } else if(design=="sprcbd" || design=="strip"){
+    
+    dsginfo <- dsginfo %>% dplyr::filter(DbAttribute %in%  c("main_exp_plot_length","main_exp_plot_width","sub_exp_plot_length","sub_exp_plot_width"))
+    
+  } else if(design=="spsp"){
+    
+    dsginfo <- dsginfo %>% dplyr::filter(DbAttribute %in% c("main_exp_plot_length", "main_exp_plot_width","sub_exp_plot_length",
+                                                           "sub_exp_plot_width","subsub_exp_plot_length" , "subsub_exp_plot_width"))
+  }
+  
+  return(dsginfo)
+  
+}
+
+
+#' Assign  experimental unit
+#' 
+#' @param .info_data 
+#' @param expmea 
+#' @param expunit 
+#' @export
+#' 
+assign_expunit <- function(.info_data, dbattr_mea = "length_p", dbattr_expunit="length_p_unit"){
+  
+  expmea <- .info_data %>% dplyr::filter(DbAttribute==dbattr_mea) %>% select(Value) %>% nth(1) 
+  expunit <- .info_data %>% dplyr::filter(DbAttribute==dbattr_expunit) %>% select(Value) %>% nth(1) 
+  
+  
+  .info_data <- .info_data %>% dplyr::mutate(Value=case_when(
+                                                    DbAttribute == dbattr_mea ~ paste(expmea,expunit),
+                                                    TRUE~Value
+                                                    )
+                                             )
 }
 
 
