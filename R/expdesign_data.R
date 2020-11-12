@@ -317,7 +317,7 @@ filter_dsginfo_design <- function(dsginfo, design,.factors_data){
                        function(x) sum(stringr::str_detect(strsplit(x, "\\|")[[1]], 
                                                            design_pattern ))>0  )==TRUE)
   
-  dsginfo[dsginfo$DbAttribute=="nfactors", "Value"] <- nrow(.factors_data)
+  dsginfo[dsginfo$DbAttribute=="nfactors", "Value"] <- as.character(nrow(.factors_data))
   
   
   factors <- get_expdesign_factors(.factors_data)  
