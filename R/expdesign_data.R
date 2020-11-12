@@ -367,7 +367,7 @@ filter_expunitinfo_design <- function(dsginfo , expunit, design){
     
     dsginfo <- dsginfo %>% dplyr::filter(Dependency==expunit)
     
-  } else if((design=="crd" || design=="rcbd" || design=="fcrd" || design=="frcbd") && expunit!=""){
+  } else if((design=="crd" || design=="rcbd" || design=="fcrd" || design=="frcbd") && expunit==""){
     
     expunit <- "plot"
     dsginfo <- dsginfo %>% dplyr::filter(Dependency==expunit)
