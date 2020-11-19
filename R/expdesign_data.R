@@ -48,8 +48,9 @@ mutate_level_unit <- function(.data){
 
 #' Get factorial levels from experimental designs
 #' @param .data experimental design data
-#' @importFrom purrr flatten map
-#' @importFrom stringr str_split  
+#' @importFrom purrr flatten map discard
+#' @importFrom stringr str_split
+#' @importFrom utils stack
 #' @export 
 
 get_factorial_levels <- function(.data){
@@ -61,6 +62,7 @@ get_factorial_levels <- function(.data){
   for(i in seq.int(nrow(.data))) {
     
     .lvl[i] <- .data[i,"levelname"] 
+    
     
     if(grepl(pattern = "Other", .lvl[i])) {
         other <- .data[i,"levelnameother"] 
@@ -94,10 +96,14 @@ get_factorial_levels <- function(.data){
         .lvl[[i]] <- .lvl[[i]]
       }
     }
-    .lvl <- .lvl %>% purrr::discard( function(x) checkmate::testScalarNA(x) )    
+    .lvl <- .lvl %>% purrr::discard( function(x) checkmate::testScalarNA(x) ) #discard NA elements   
+    .lvl <- lapply(.lvl, function(x) x[!is.na(x)]) #remove NA values inside each factor-level
+    .lvl <-  with(stack(.lvl), split(values, ind)) #combine list-elements with same name
   }
   
-  .lvl
+ 
+  
+  return(.lvl)
   
 }
 
@@ -170,9 +176,10 @@ get_experimental_design <- function(expsiteId = NULL, format=c("json","list","da
                             version = "/0291/r"
                              ){
  
+  
   .factors_data <- ragapi::ag_get_edsfactors_expsiteId(
-                              expsiteDbId=expsiteId, 
-                              format=format,
+                              expsiteDbId = expsiteId, 
+                              format = format,
                               serverURL =  serverURL,
                               version = version
                               )

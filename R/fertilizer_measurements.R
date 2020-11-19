@@ -4,6 +4,11 @@
 #' @param format type of data structure format
 #' @param serverURL database server URL
 #' @param version api version
+#' @examples \dontrun{
+#' library(ragapi)
+#' library(ragrofims)
+#' out<- get_agrofims_fertproducts(25, "data.frame")
+#' }
 #' @importFrom ragapi ag_get_cropmea_expsiteId ag_get_phenomea_expsiteId ag_get_soil_expsiteId  ag_get_soil_expsiteId
 #' @export
 #' 
@@ -135,4 +140,8 @@ get_fertproducts_crop <- function(fertproducts, crop){
   }
   return(out)
 }
+
+
+
+
 

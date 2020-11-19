@@ -23,3 +23,10 @@ get_agrofims_fertproducts(
 \description{
 Get fertilizer product data from AgroFIMS platform
 }
+\examples{
+\dontrun{
+library(ragapi)
+library(ragrofims)
+out<- get_agrofims_fertproducts(25, "data.frame")
+}
+}
