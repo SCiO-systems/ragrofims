@@ -217,13 +217,16 @@ get_experimental_design <- function(expsiteId = NULL, format=c("json","list","da
 
 }
 
-#' Check if a experimental design
+#' Check if it is a experimental design
+#' @description check if it fill the conditions to be a experimental design object.
+#' @param expdesign data.frame experimental design data.frame
 #' @export
+#' 
 ck_expdesign <- function(expdesign){
     
-    #check if it is a experimental design
-    # YES wheter is a  data.frame , otherwise FALSE
-    checkmate::testDataFrame(expdesign,min.rows = 1,min.cols = 2) 
+  #check if it is a experimental design
+  # YES wheter is a  data.frame , otherwise FALSE
+  checkmate::testDataFrame(expdesign,min.rows = 1,min.cols = 2) 
 }
 
 
@@ -347,6 +350,11 @@ filter_dsginfo_design <- function(dsginfo, design,.factors_data){
 
 #' Filter experimental units
 #' 
+#' @description based on differente types of experimental units, this function filter values according to what users have selected in the interface.
+#' @param dsginfo data.frame experimental design information
+#' @param expunit character experimental unit. Example: \code{plot}, \code{field} and \code{pot}.
+#' @param design character experimetal design abbreviation used in AGROFIMS database. Example: \code{crd} for completely randomized design. Check other such as \code{rcbd}, \code{frcbd}
+#' , \code{fcrd}, , \code{spsp}, among others. 
 #' @description Filter experimental unit values from AGROFIMS experiments
 #' @export
 #' 
@@ -396,9 +404,10 @@ filter_expunitinfo_design <- function(dsginfo , expunit, design){
 
 #' Assign  experimental unit
 #' 
-#' @param .info_data 
-#' @param expmea 
-#' @param expunit 
+#' @description Assign and paste dimension values and dimension units. Example: \code{15 kg} , \code{20 ton/hec}.
+#' @param .info_data data.frame information  
+#' @param dbattr_mea character internal code for input dimension values. Example \code{length_p} is for plot length
+#' @param dbattr_expunit character internal code for input units dimension. Example \code{length_p_unit} is for plot length units
 #' @export
 #' 
 assign_expunit <- function(.info_data, dbattr_mea = "length_p", dbattr_expunit="length_p_unit"){

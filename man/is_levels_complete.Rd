@@ -7,7 +7,7 @@
 is_levels_complete(.data)
 }
 \arguments{
-\item{.data}{}
+\item{.data}{levels of experimental design factors}
 }
 \description{
 Detect if levels are missing

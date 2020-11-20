@@ -6,6 +6,9 @@
 \usage{
 ck_factor_names(.data)
 }
+\arguments{
+\item{.data}{data.frame experimental data which includes factors and levels retrieved from AGROFIMS database via API.}
+}
 \description{
 Check factor names
 }

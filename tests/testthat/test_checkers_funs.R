@@ -15,7 +15,7 @@ test_that("test has_agronomic_metadata with all missing data with NA", {
 
 test_that("test has_agronomic_metadata with all missing data with double quotes ", {
   
-  .data <- data.frame(a1=c("","",""), b1=c("","",""), c1= c("","",""))
+  .data <- data.frame(a1=c("","",""), b1=c("","",""))
   out_test <- has_agronomic_metadata(.data) 
   testthat::expect_false(object = out_test)
   

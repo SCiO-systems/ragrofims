@@ -11,12 +11,12 @@ assign_expunit(
 )
 }
 \arguments{
-\item{.info_data}{}
+\item{.info_data}{data.frame information}
 
-\item{expmea}{}
+\item{dbattr_mea}{character internal code for input dimension values. Example \code{length_p} is for plot length}
 
-\item{expunit}{}
+\item{dbattr_expunit}{character internal code for input units dimension. Example \code{length_p_unit} is for plot length units}
 }
 \description{
-Assign  experimental unit
+Assign and paste dimension values and dimension units. Example: \code{15 kg} , \code{20 ton/hec}.
 }

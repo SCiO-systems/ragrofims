@@ -1,6 +1,7 @@
 #' Weather Fieldbook  
 #' 
 #' @description Create weather field book from AgroFIMS database based on trailist
+#' @param traitlist data.frame trait list data which includes weather data
 #' @importFrom dplyr as_tibble mutate case_when
 #' @export
 #'

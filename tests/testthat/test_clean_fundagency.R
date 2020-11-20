@@ -1,9 +1,11 @@
-context("test clean funding agency")
 library(ragapi)
 library(gsheet)
-meta_dbattributes <- gsheet::gsheet2tbl("https://docs.google.com/spreadsheets/d/124fPX0f_J9Ws-f4ZgSX6AyXQVbCZY50nMsuaFfPaDWg/edit#gid=997278569")
+
+context("test clean funding agency")
 
 test_that("Test clean funding agency api version 233", {
+
+  meta_dbattributes <- gsheet::gsheet2tbl("https://docs.google.com/spreadsheets/d/124fPX0f_J9Ws-f4ZgSX6AyXQVbCZY50nMsuaFfPaDWg/edit#gid=997278569")
   
 
 .data <- ag_get_fundagency_studyId(studyDbId = 6,format = "data.frame",

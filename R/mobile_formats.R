@@ -2,6 +2,7 @@
 #' 
 #' @description AgroFIMS timing values are divided in 5 attributes or columns: Days after planting, Growth stage, Frequency,
 #' Date and Other. Therefore, this function assign in the column \code{meaTimeValue} all the different values according to each case or attribute.
+#' @param traitlist data.frame trait list data
 #' @importFrom dplyr mutate as_tibble case_when
 #' @export
 
@@ -17,6 +18,12 @@ mutate_crop_names <- function(traitlist){
 }
 
 
+#' Mutate timiing values in trait list tables
+#' 
+#' @description Traitlist tables includes timing values such as \code{Days after plating}, \code{Growth stage}, \code{Date} and \code{Frequency}. Those values are dispersing in multiple columns, so 
+#' the idea is place this value in the \code{meaTimeValue} attribute that store timing values from different type of timing inputs.
+#' @importFrom dplyr mutate case_when 
+#' @param traitlist data.frame trait list data
 #' @export
 
 mutate_timming_values <- function(traitlist){
@@ -45,6 +52,7 @@ mutate_timming_values <- function(traitlist){
 #' 
 #' @description AgroFIMS timing values are divided in 5 attributes or columns: Days after planting, Growth stage, Frequency,
 #' Date and Other. Therefore, this function assign in the column \code{meaTimeValue} all the different values according to each case or attribute.
+#' @param traitlist data.frame trait list data
 #' @importFrom dplyr mutate as_tibble case_when select
 #' @export
 
@@ -86,7 +94,9 @@ mutate_timming_values <- function(traitlist){
 } 
 
 #' Mutate variable validation attribute for KDSmart mobile application
+#' 
 #' @description Mutate and assign in variableValidation attribute all the kdsmart validations according to the type of variable (DECIMAL, INTEGER, NUMERIC,DATE,TEXT)
+#' @param traitlist data.frame trait list data
 #' @export
 #' 
 mutate_variable_validation_kdsmart <- function(traitlist){
@@ -106,7 +116,9 @@ mutate_variable_validation_kdsmart <- function(traitlist){
 
 
 #' Mutate variable validation attribute for KDSmart mobile application
-#' @description Mutate and assign in variableValidation attribute all the kdsmart validations according to the type of variable (DECIMAL, INTEGER, NUMERIC,DATE,TEXT)
+#' 
+#' @description mutate validation rules according different types of inputs in order to complaint with Field Book App.
+#' @param traitlist data.frame trait list data
 #' @export
 #' 
 mutate_variable_validation_fbapp <- function(traitlist){
@@ -128,13 +140,9 @@ mutate_variable_validation_fbapp <- function(traitlist){
 
 
 
-
-
-
-######3
 #' Mutate number of measurement per season and per plot 
 #' @param traitlist trait list table
-#' @description set samplesperseason and samplesperplot to 1 evaluations by default
+#' @description set atributes samplesperseason and samplesperplot to 1 evaluations by default
 #' @export
 #' 
 mutate_nummeasurement_phenology <- function(traitlist){
@@ -199,11 +207,6 @@ flatten_manprac_actualplan <- function(traitlist_dt){
 } 
 
 
-
-
-
-
-#####
 #' Convert from AgroFIMS format to KDSmart trait list format
 #' 
 #' @param traitlist data.frame table of al the list of traits

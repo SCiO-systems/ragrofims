@@ -7,7 +7,7 @@
 seq_protocol(.x)
 }
 \arguments{
-\item{.x}{}
+\item{.x}{vector vector of indexes}
 }
 \description{
 Vectorized creation of sequence of number of evaluation based on initial values.

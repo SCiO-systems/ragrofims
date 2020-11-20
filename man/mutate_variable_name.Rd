@@ -6,6 +6,9 @@
 \usage{
 mutate_variable_name(traitlist)
 }
+\arguments{
+\item{traitlist}{data.frame trait list data}
+}
 \description{
 AgroFIMS timing values are divided in 5 attributes or columns: Days after planting, Growth stage, Frequency,
 Date and Other. Therefore, this function assign in the column \code{meaTimeValue} all the different values according to each case or attribute.

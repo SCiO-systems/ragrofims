@@ -1,7 +1,6 @@
 
 library(ragapi)
 library(ragrofims)
-library(gsheet)
 
 context("test of calculation of nutrient content in products")
 

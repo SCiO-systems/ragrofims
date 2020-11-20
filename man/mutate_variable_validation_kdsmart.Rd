@@ -6,6 +6,9 @@
 \usage{
 mutate_variable_validation_kdsmart(traitlist)
 }
+\arguments{
+\item{traitlist}{data.frame trait list data}
+}
 \description{
 Mutate and assign in variableValidation attribute all the kdsmart validations according to the type of variable (DECIMAL, INTEGER, NUMERIC,DATE,TEXT)
 }

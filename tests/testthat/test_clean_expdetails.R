@@ -1,8 +1,8 @@
-context("test clean and convert xlsx funding agency")
-
 library(ragapi)
 library(gsheet)
-meta_dbattributes <- gsheet::gsheet2tbl("https://docs.google.com/spreadsheets/d/124fPX0f_J9Ws-f4ZgSX6AyXQVbCZY50nMsuaFfPaDWg/edit#gid=997278569")
+
+context("test clean and convert xlsx funding agency")
+
 
 test_that("Test clean and convert xlsx funding agency api version 233", {
   

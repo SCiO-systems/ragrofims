@@ -10,5 +10,5 @@ mutate_nummeasurement_phenology(traitlist)
 \item{traitlist}{trait list table}
 }
 \description{
-set samplesperseason and samplesperplot to 1 evaluations by default
+set atributes samplesperseason and samplesperplot to 1 evaluations by default
 }

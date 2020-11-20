@@ -1,8 +1,5 @@
 library(ragapi)
 library(ragrofims)
-library(gsheet)
-
-
 context("Test for clean and get metadata from personnel metadata")
 
 test_that("Test get_personnel_metadata for testq7 - API ver. 233 - no personnel", {

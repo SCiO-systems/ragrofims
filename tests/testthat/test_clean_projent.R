@@ -3,9 +3,9 @@ library(ragapi)
 library(ragrofims)
 library(gsheet)
 
-meta_dbattributes <- gsheet::gsheet2tbl("https://docs.google.com/spreadsheets/d/124fPX0f_J9Ws-f4ZgSX6AyXQVbCZY50nMsuaFfPaDWg/edit#gid=997278569")
-
 context("test clean and convert xlsx project mgmt entity")
+
+meta_dbattributes <- gsheet::gsheet2tbl("https://docs.google.com/spreadsheets/d/124fPX0f_J9Ws-f4ZgSX6AyXQVbCZY50nMsuaFfPaDWg/edit#gid=997278569")
 
 
 test_that("Test clean and convert xlsx project mgmt entity testq7 - API ver. 233", {

@@ -6,6 +6,9 @@
 \usage{
 ck_level_values(.data)
 }
+\arguments{
+\item{.data}{data.frame experimental data which includes factors and levels retrieved from AGROFIMS database via API.}
+}
 \description{
 Check missing values in levels
 }

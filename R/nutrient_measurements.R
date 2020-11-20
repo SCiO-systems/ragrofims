@@ -110,18 +110,21 @@ calc_prodamount <- function(nutrient){
 
 #' Calculation of nutrient concentration per split application
 #' 
-#' @param prodnut numeric nutrient element in product
 #' @param nut_split numeric nutrient element per split
+#' @param prodnut numeric nutrient element in product
 #' @description calculae nutrient concentration in fertilizer products
 #' @export
 #' 
-calc_prodnut_split <- function(nut_split,prodnut){
-  
-   if( nut_split>0 && prodnut>0 ){
-     out <- (nut_split/prodnut)*100  
-   }  else{
-     out <- 0
-   }
+calc_prodnut_split <- function(nut_split, prodnut){
+    
+    nut_split <- as.numeric(nut_split) 
+    prodnut <- as.numeric(prodnut)
+    
+   #if( length(nut_split) >0 && lenght(prodnut>0 ){
+     out <- (nut_split/prodnut)*100
+   #}  else{
+   #out <- 0
+   #}
    out
   
 }

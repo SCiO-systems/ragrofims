@@ -1,4 +1,5 @@
 #' Check factor names
+#' @param .data data.frame experimental data which includes factors and levels retrieved from AGROFIMS database via API.
 #' @importFrom checkmate allMissing anyMissing
 #' @export
 #' 
@@ -20,6 +21,8 @@ ck_factor_names <- function(.data){
 
 
 #' Check missing values in levels
+#' 
+#' @param .data data.frame experimental data which includes factors and levels retrieved from AGROFIMS database via API.
 #' @importFrom checkmate allMissing anyMissing
 #' @export
 #' 

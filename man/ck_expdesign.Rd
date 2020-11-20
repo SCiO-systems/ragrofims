@@ -2,10 +2,13 @@
 % Please edit documentation in R/expdesign_data.R
 \name{ck_expdesign}
 \alias{ck_expdesign}
-\title{Check if a experimental design}
+\title{Check if it is a experimental design}
 \usage{
 ck_expdesign(expdesign)
 }
+\arguments{
+\item{expdesign}{data.frame experimental design data.frame}
+}
 \description{
-Check if a experimental design
+check if it fill the conditions to be a experimental design object.
 }

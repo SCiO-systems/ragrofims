@@ -56,8 +56,6 @@
 #' @description Tipically values users fill forms or combos with standarized inputs in AgroFIMS. However, sometimes ontologized inputs are not enough.
 #' For this reason, they select the \code{Other} value in order to fill options that have not been maped in the Agronomic Ontology in AgroFIMS
 #' @param .data data to clean up \code{Other} values
-#' @param attribute attribute of the database. Attribute name from AgroFIMS database where a user input is stored 
-#' @param other_attribute Other attribute name related to \code{attribute} parameter used to store \code{Other} values or non-standardized inputs. 
 #' @author Omar Benites
 #' @examples \dontrun{
 #' .data <- ag_get_sitedesc_studyId(studyDbId = 21,format = "data.frame",

@@ -8,10 +8,6 @@ clean_sitedesc(.data)
 }
 \arguments{
 \item{.data}{data to clean up \code{Other} values}
-
-\item{attribute}{attribute of the database. Attribute name from AgroFIMS database where a user input is stored}
-
-\item{other_attribute}{Other attribute name related to \code{attribute} parameter used to store \code{Other} values or non-standardized inputs.}
 }
 \description{
 Tipically values users fill forms or combos with standarized inputs in AgroFIMS. However, sometimes ontologized inputs are not enough.

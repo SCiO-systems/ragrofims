@@ -55,7 +55,7 @@ get_manprac_protocol <- function(expsiteId=NULL,
 }
 
 #' Vectorized creation of sequence of number of evaluation based on initial values.
-#' @param .x 
+#' @param .x vector vector of indexes
 #' @export
 #' 
 seq_protocol <- function(.x){

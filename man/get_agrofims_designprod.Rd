@@ -2,7 +2,7 @@
 % Please edit documentation in R/fertilizer_design_factor.R
 \name{get_agrofims_designprod}
 \alias{get_agrofims_designprod}
-\title{Get fertilizer information about factor in experimental designs}
+\title{Get fertilizer information about factors in experimental designs}
 \usage{
 get_agrofims_designprod(
   expsiteId = NULL,
@@ -21,7 +21,7 @@ get_agrofims_designprod(
 \item{version}{api version}
 }
 \description{
-Get fertilizer information about factor in experimental designs
+Get fertilizer information about factors in experimental designs
 }
 \examples{
 \dontrun{

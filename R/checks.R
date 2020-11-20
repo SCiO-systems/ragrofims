@@ -53,7 +53,7 @@ replaceNaCharacter <- function(.data){
 }
 
 #' Detect if levels are missing
-#' @param .data 
+#' @param .data levels of experimental design factors
 is_levels_complete <- function(.data){
   #If TRUE, all levels are complete, otherwise some are missing
   sum(match(x = .data[,"levelname"],""),na.rm = TRUE)==0 

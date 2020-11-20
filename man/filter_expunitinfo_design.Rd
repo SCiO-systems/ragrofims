@@ -6,6 +6,16 @@
 \usage{
 filter_expunitinfo_design(dsginfo, expunit, design)
 }
+\arguments{
+\item{dsginfo}{data.frame experimental design information}
+
+\item{expunit}{character experimental unit. Example: \code{plot}, \code{field} and \code{pot}.}
+
+\item{design}{character experimetal design abbreviation used in AGROFIMS database. Example: \code{crd} for completely randomized design. Check other such as \code{rcbd}, \code{frcbd}
+, \code{fcrd}, , \code{spsp}, among others.}
+}
 \description{
+based on differente types of experimental units, this function filter values according to what users have selected in the interface.
+
 Filter experimental unit values from AGROFIMS experiments
 }

@@ -6,6 +6,9 @@
 \usage{
 cr_weather_fbook(traitlist)
 }
+\arguments{
+\item{traitlist}{data.frame trait list data which includes weather data}
+}
 \description{
 Create weather field book from AgroFIMS database based on trailist
 }
