@@ -272,7 +272,7 @@ get_dsginfo_data <- function(expsiteId = NULL,
   expsiteId <- .info_data[1,"Value"]#get expsiteId
   expunit <- .info_data[.info_data$DbAttribute=="variable","Value"]
   
-  if(checkmate::test_false(expsiteId)){ #if there experiment-site does not exist
+  if(expsiteId==""){ #if there experiment-site does not exist
     
     out <- data.frame()
     
@@ -298,11 +298,12 @@ get_dsginfo_data <- function(expsiteId = NULL,
                                                     TRUE~Dependency
                                                     )
                                         )
-    min_info <- filter_dsginfo_design(out, design,.factors_data = .factors_data)
+    min_info <- filter_dsginfo_design(dsginfo = out, design = design, .factors_data = .factors_data)
     unit_info <- filter_expunitinfo_design(out, expunit, design)
-    out <- rbind(min_info,unit_info) %>% dplyr::select(AgroLabelDbAttribute, Value)
-    names(out) <- c("Parameter", "Value")
+    out <- data.table::rbindlist(list(min_info, unit_info),fill = TRUE) %>% as.data.frame(stringsAsFactors=FALSE) %>% dplyr::select(AgroLabelDbAttribute, Value)
     
+    names(out) <- c("Parameter", "Value")
+    out
   } 
   return(out)
 }
@@ -335,15 +336,15 @@ filter_dsginfo_design <- function(dsginfo, design,.factors_data){
   flevels <- get_factorial_levels(.factors_data) %>% purrr::map_chr(function(x)paste(x,collapse = ", ")) %>% as.list()
   flevels_label <- paste0("Factor ", seq.int(flevels), "-Levels")
   fvalues <- flabels <- NULL
-  for(i in 1:nrow(.factors_data)){
+  #Assign factor names and levels in two vectors
+  for(i in 1:length(factors)){
       fvalues <- append(fvalues,c(factors[i],flevels[[i]]))
       flabels <- append(flabels,c(factors_label[i],flevels_label[[i]]))
   }
-  ftable <- data.frame(flabels, fvalues)
-  names(ftable) <- c("AgroLabelDbAttribute", "Value")
-  
-  dsginfo <- data.table::rbindlist(list(dsginfo, ftable),use.names = TRUE,fill = TRUE) %>% as.data.frame(stringsAsFactors=FALSE)
-
+  factors_table <- data.frame(flabels, fvalues, stringsAsFactors = FALSE)
+  names(factors_table) <- c("AgroLabelDbAttribute", "Value")
+  #Export all the columns and bind dsinfo table and factors_table
+  out <- data.table::rbindlist(list(dsginfo, factors_table),use.names = TRUE,fill = TRUE) %>% as.data.frame(stringsAsFactors=FALSE)
   
 }
 

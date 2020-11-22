@@ -19,12 +19,10 @@ cr_phenology_fbook <- function(design, traitlist){
   
   for(i in seq.int(crop)){
     
-    #vars <- traitlist %>%  filter(cropcommonname==crop[i]) %>% select(variableName) %>% nth(1)
-    #if(length(vars)>0){
-      #design[, vars] <- NA #add variable for crop measurements #columns
-      #out[[i]] <- design  #create design + variable data.frame  
+    #vars[[i]] <- traitlist %>%  filter(cropcommonname==crop[i]) %>% select(variableName) %>% nth(1)
+    vars[[i]] <- traitlist %>%  dplyr::filter(cropcommonname==crop[i]) 
+    vars[[i]] <- add_season_numplot_prefix(vars[[i]])
     
-    vars[[i]] <- traitlist %>%  filter(cropcommonname==crop[i]) %>% select(variableName) %>% nth(1)
     design[, vars[[i]] ] <- NA #add variable for crop measurements #columns
     out[[i]] <- design  #create design + variable data.frame
     design <- temp_design

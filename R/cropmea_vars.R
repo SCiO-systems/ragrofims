@@ -15,7 +15,9 @@ cr_cmeasurement_fbook <- function(design, traitlist){
   vars <- vector("list",length = length(crop))
   
   for(i in seq.int(crop)){
-    vars[[i]] <- traitlist %>%  filter(cropcommonname==crop[i]) %>% select(variableName) %>% nth(1)
+    #vars[[i]] <- traitlist %>%  filter(cropcommonname==crop[i]) %>% select(variableName) %>% nth(1)
+    vars[[i]] <- traitlist %>%  filter(cropcommonname==crop[i])
+    vars[[i]] <- add_season_numplot_prefix( vars[[i]])
     design[, vars[[i]] ] <- NA #add variable for crop measurements #columns
     out[[i]] <- design  #create design + variable data.frame
     design <- temp_design

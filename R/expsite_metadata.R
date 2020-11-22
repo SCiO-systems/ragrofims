@@ -103,7 +103,7 @@ convert_to_xlsx_sitedesc <- function(.data, meta_dbattributes){
 
 
 
-#' Get metadata from experiment site information
+#' Get metadata of experiment site information
 #' 
 #' @param expsiteId or experimente site ID
 #' @param format type of data structure format

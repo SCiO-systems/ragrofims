@@ -98,7 +98,7 @@ get_agrofims_designnut <- function(expsiteId= NULL,
     names(nutrient) <- stringr::str_replace_all(string = names(nutrient), pattern = "split_",replacement = "")
     nutrient[,"productvalue"] <- as.character(nutrient[,"productvalue"])
     nutrient[,"unitvalue"] <- as.numeric(nutrient[,"unitvalue"])
-    nutrient <- nutrient %>% dplyr::filter(productvalue!="")
+    #nutrient <- nutrient %>% dplyr::filter(productvalue!="")
     out <- nutrient
 
     #fertilizer <- calc_nutamount(fertilizer)
@@ -194,9 +194,9 @@ calc_fertprod_design <- function(fertilizer, fert_factors=NULL, factorId = NULL)
   fertilizer <- fertilizer %>% dplyr::filter(group==factorId)
   if(nrow(fertilizer)>0){
    
-  fertilizer <- dplyr::left_join(fert_factors, fertilizer)
+  fertilizer <- dplyr::left_join(fert_factors, fertilizer, by= "group")
         
-    meta_attributes <- c("productvalue", "factorunit", "unitvalue")
+    meta_attributes <- c("productvalue", "factortype", "factorunit", "unitvalue")
     nut_names <- c("N","P", "K","Ca","Mg","S","Mb", "Zn", "B", "Cu", "Fe", "Mn" ,"Ni","Cl")
     fertilizer <- fertilizer %>% 
       mutate(N =  calc_prodnut_split(unitvalue, N)) %>% 

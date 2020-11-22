@@ -61,8 +61,13 @@ get_agrofims_traitlist <- function(expsiteId=NULL,
       traitlist_dt <- rbind(traitlist_dt , manprac_dt_on)
     }
     
-    #traitlist_dt$AgroFIMSId <- 1:nrow(traitlist_dt)
     
+    traitlist_dt <- traitlist_dt %>% dplyr::mutate(samplesperplot = case_when( is.na(samplesperplot) ~ "1",
+                                                                           TRUE~samplesperplot
+                                                                           ) )
+    traitlist_dt <- traitlist_dt %>% dplyr::mutate(samplesperseason = case_when( is.na(samplesperseason) ~ "1",
+                                                                           TRUE~samplesperseason
+                                                                          ) )
     
     
   } else{
@@ -71,3 +76,66 @@ get_agrofims_traitlist <- function(expsiteId=NULL,
   return(traitlist_dt)
                         
 }
+
+
+# Function to attach underscore and hashtag
+#
+# dt: data frame with the crop measurement table to add number of season and plots
+add_season_numplot_prefix<- function(dt){
+  
+  if(!is.null(dt) && nrow(dt)!=0){
+    out<-NULL
+    dt$samplesperseason <- as.numeric(dt$samplesperseason)
+    dt$samplesperplot <- as.numeric(dt$samplesperplot)
+    season_idx <- which(dt$samplesperseason<=0)
+    nplot_idx <-  which(dt$samplesperplot<=0)
+    
+    if(length(season_idx)>0){
+      dt$samplesperseason[season_idx]<- 1
+    }
+    if(length(nplot_idx)>0){
+      dt$samplesperplot[nplot_idx]<- 1
+    }
+    out <- list()
+    
+    #Number of instaces per seasons
+    for(i in 1:nrow(dt)) {
+      
+      if(dt$samplesperplot[i]==1L){
+        out[[i]] <- dt$variableName[i]
+      } else {
+        out[[i]]<- paste(dt$variableName[i],1:dt$samplesperplot[i],sep="__")   
+      }
+      
+    }
+    
+    if(all(dt$samplesperseason==1L)){
+      out<- unlist(out)
+    } 
+    else{
+      
+      out2<- list()
+      for( i in 1:nrow(dt)){
+        if(dt$samplesperseason[i]==1L){
+          out2[[i]] <- out[[i]]
+        } else {
+          out2[[i]]<- sort( as.vector(outer(1:dt$samplesperseason[i], out[[i]], paste, sep=":")))
+        }
+      }
+      
+      out<- unlist(out2)
+      
+    }
+    
+  } 
+  else {
+    
+    out<-NULL
+    
+  }
+  out
+  
+} 
+
+
+

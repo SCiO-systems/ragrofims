@@ -7,12 +7,13 @@
 #'
 cr_weather_fbook <- function(traitlist){
   
-  weather_vars <- traitlist %>% 
-                    filter(singularity=="weather") %>% 
-                    select(variableName) %>% nth(1)
- 
-  out <- data.frame(matrix("", ncol = length(weather_vars), nrow = 1))
-  names(out) <- weather_vars
+  # weather_vars <- traitlist %>% 
+  #                   filter(singularity=="weather") %>% 
+  #                   select(variableName) %>% nth(1)
+  weather_vars <- traitlist %>% dplyr::filter(singularity=="weather")
+  vars <- add_season_numplot_prefix( weather_vars)
+  out <- data.frame(matrix("", ncol = length(vars), nrow = 1))
+  names(out) <- vars
   return(out)
 }
 

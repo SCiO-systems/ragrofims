@@ -8,11 +8,14 @@
 #' 
 cr_mangprac_fbook <-function(design, traitlist){
   
+  # manprac_vars <- traitlist %>% 
+  #                 filter(singularity=="management_practices") %>% 
+  #                 select(variableName) %>% nth(1)
   manprac_vars <- traitlist %>% 
-                  filter(singularity=="management_practices") %>% 
-                  select(variableName) %>% nth(1)
+                            dplyr::filter(singularity=="management_practices")
+  vars <- add_season_numplot_prefix( manprac_vars)
   
-  design[, manprac_vars] <- NA #add variable for soil measurements #columns
+  design[, vars] <- NA #add variable for soil measurements #columns
   #TODO: AGREGAR NUM PER SEASON AND PER PLOT 
   
   out <- design  #create design + variable data.frame
