@@ -45,6 +45,17 @@ get_agrofims_traitlist <- function(expsiteId=NULL,
   
   if(nrow(traitlist_dt)>0 && nrow(out1)>0){
     #Mutate crop and new 'other crop' names
+    
+    traitlist_dt <- traitlist_dt %>% 
+                                dplyr::mutate(parametermeasured = 
+                                             case_when(singularity=="crop_phenology"~ group,
+                                                   singularity=="management_practices"~ group,
+                                                   singularity=="soil"~ "soil",
+                                                   TRUE~parametermeasured
+                                                  )
+                                              )
+    
+    
     traitlist_dt <- mutate_crop_names(traitlist_dt)
     #Variable Name
     traitlist_dt <- mutate_variable_name(traitlist_dt)
@@ -55,16 +66,17 @@ get_agrofims_traitlist <- function(expsiteId=NULL,
     #traitlist_dt <- get_manprac_actualplan(traitlist_dt)
     traitlist_dt <- flatten_manprac_actualplan(traitlist_dt)
     
-    if(nrow(out5)>0){ #if there aren't data
+    if(nrow(out5)>0){ #for management practices
       manprac_dt_on <- traitlist_dt %>% dplyr::filter(managementmeasurement=="on")
       traitlist_dt <- traitlist_dt %>% dplyr::filter(is.na(managementmeasurement))
       traitlist_dt <- rbind(traitlist_dt , manprac_dt_on)
     }
     
-    
+    #Assign 1 to samplesperplot in case of having NA values
     traitlist_dt <- traitlist_dt %>% dplyr::mutate(samplesperplot = case_when( is.na(samplesperplot) ~ "1",
                                                                            TRUE~samplesperplot
                                                                            ) )
+    #Assign 1 to samplesperseason in case of having NA values
     traitlist_dt <- traitlist_dt %>% dplyr::mutate(samplesperseason = case_when( is.na(samplesperseason) ~ "1",
                                                                            TRUE~samplesperseason
                                                                           ) )

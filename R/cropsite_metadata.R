@@ -25,7 +25,7 @@ convert_to_xlsx_cropdesc <- function(.data, meta_dbattributes){
     .data <- dplyr::left_join(.data, meta_dbattributes)
     .data <- .data %>% dplyr::filter(DbAttribute!="intercropValueRowCrop")
     out <- .data[,c("AgroLabelDbAttribute", "Value")]
-    
+    names(out) <- c("Parameter", "Value")
   } else {
     for(i in 1:length(crop)){
       out[[i]] <- .data %>% dplyr::filter(cropcommonname==crop[i]) %>% dplyr::select(cropcommonname,varietyname,intercropValueRowCrop)
@@ -44,7 +44,9 @@ convert_to_xlsx_cropdesc <- function(.data, meta_dbattributes){
     }
     .data$AgroLabelDbAttribute <- paste(.data$AgroLabelDbAttribute, .data$id)
     out <- .data[,c("AgroLabelDbAttribute", "Value")]
+    names(out) <- c("Parameter", "Value")
   }
+ 
   return(out)
   
 }

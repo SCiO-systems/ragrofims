@@ -215,12 +215,14 @@ flatten_manprac_actualplan <- function(traitlist_dt){
 #' @export
 #'  
 #'  
+
 agro_to_kdsmart <- function(traitlist, dictionary){
   
   traitlist_names <- names(traitlist)
   dictionary <- dictionary %>% 
                          dplyr::filter(!is.na(kdsmart)) %>% 
                          dplyr::filter(DbAttributes %in%  traitlist_names) %>%  
+                         dplyr::arrange(kdsmart_order) %>% 
                          dplyr::select(DbAttributes, kdsmart) %>% 
                          as.data.frame(stringsAsFactors=FALSE)   
       
