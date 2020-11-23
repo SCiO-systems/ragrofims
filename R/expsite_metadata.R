@@ -67,6 +67,7 @@
 #'  
 clean_sitedesc <- function(.data){
   
+  .data <- .data %>% replace(is.na(.), "")
   index <- c(.get_other_rowpos_sitedesc(.data, "inhighlevelother"),
              .get_other_rowpos_sitedesc(.data, "insitevegetationother"),
              .get_other_rowpos_sitedesc(.data, "soilclasssystemother")
@@ -90,10 +91,11 @@ clean_sitedesc <- function(.data){
 #' @description Transform an API table to Excel table format
 #' @author Omar Benites
 #' @description set and modify databases attributes by AgroFIMS label in order to export the fieldbook file
+#' @importFrom dplyr left_join filter
 #' @export
 #' 
 convert_to_xlsx_sitedesc <- function(.data, meta_dbattributes){
-  
+   
    out <- dplyr::left_join(.data, meta_dbattributes)
    out <- dplyr::filter(out, !is.na(AgroLabelDbAttribute))
   .data <- data.frame(Parameter = out$AgroLabelDbAttribute, 

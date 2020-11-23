@@ -254,6 +254,8 @@ set_protocol_names_kdsmart <- function(protocol_dt, dictionary){
   
   protocol_dt <- protocol_dt[, db_attributes]
   names(protocol_dt) <-  dictionary$kdsmart_protocol
+  sel_kdsmart_headers <- c("Crop",	"TraitName",	"Value",	"TraitUnit")
+  protocol_dt <- protocol_dt[, sel_kdsmart_headers]
   protocol_dt
   
 }
