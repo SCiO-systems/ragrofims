@@ -51,10 +51,51 @@ get_agrofims_traitlist <- function(expsiteId=NULL,
                                              case_when(singularity=="crop_phenology"~ group,
                                                    singularity=="management_practices"~ group,
                                                    singularity=="soil"~ "soil",
+                                                   singularity=="weather"~ "weather",
                                                    TRUE~parametermeasured
                                                   )
                                               )
+    #In case user select other management practices, it change to the new name
+    traitlist_dt <- traitlist_dt %>% 
+      dplyr::mutate(variableDataType = 
+                      case_when(
+                        singularity=="management_practices" & variableDataType=="OTHER"~ "DECIMAL",
+                        TRUE~variableDataType
+                      )
+      )
     
+    traitlist_dt <- traitlist_dt %>% 
+      dplyr::mutate(variableLowerLimit = 
+                      case_when(
+                        singularity=="management_practices" & measurement=="Other"~ "0.00",
+                        TRUE~variableLowerLimit
+                      )
+      )
+    
+    
+    traitlist_dt <- traitlist_dt %>% 
+      dplyr::mutate(variableUpperLimit = 
+                      case_when(
+                        singularity=="management_practices" & measurement=="Other"~ "10000.00",
+                        TRUE~variableUpperLimit
+                      )
+      )
+
+    traitlist_dt <- traitlist_dt %>% 
+      dplyr::mutate(variableLevel = 
+                      case_when(
+                        singularity=="management_practices" & measurement=="Other"~ "Plot",
+                        TRUE~variableLevel
+                      )
+      )
+        
+    traitlist_dt <- traitlist_dt %>% 
+                        dplyr::mutate(measurement = 
+                                        case_when(
+                                                  singularity=="management_practices" & measurement=="Other"~ valueother,
+                                                  TRUE~measurement
+                                                  )
+                        )
     
     traitlist_dt <- mutate_crop_names(traitlist_dt)
     #Variable Name
