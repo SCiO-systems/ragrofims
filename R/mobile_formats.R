@@ -18,7 +18,7 @@ mutate_crop_names <- function(traitlist){
 }
 
 
-#' Mutate timiing values in trait list tables
+#' Mutate timing values in trait list tables
 #' 
 #' @description Traitlist tables includes timing values such as \code{Days after plating}, \code{Growth stage}, \code{Date} and \code{Frequency}. Those values are dispersing in multiple columns, so 
 #' the idea is place this value in the \code{meaTimeValue} attribute that store timing values from different type of timing inputs.
@@ -45,8 +45,53 @@ mutate_timming_values <- function(traitlist){
   traitlist
 }
 
-#test 1: to_timming_kdsmart(ncol(2),2)
-#test 1: to_timming_kdsmart(ncol(2),2)
+
+#' Mutate variable data type attribute for ODK mobile application
+#' 
+#' @description Mutate and assign in variableDataType attribute all the ODK validations according to the type of variable (DECIMAL, INTEGER, NUMERIC,DATE,TEXT)
+#' @param traitlist data.frame trait list data
+#' @export
+#' 
+mutate_variable_type_odk <- function(traitlist){
+  
+  traitlist <- traitlist %>% 
+    as_tibble() %>% #as tibble data structure
+    mutate(variableDataType2="") %>% #all as character
+    mutate(variableDataType2=
+             case_when(
+                      variableDataType=="DECIMAL" ~ "decimal",
+                      #paste0(variableLowerLimit ," <= x <= ", variableUpperLimit),
+                      variableDataType=="INTEGER" ~  "integer",
+                      variableDataType=="CATEGORICAL" ~ paste0("select_one ", tolower(variableName)),
+                      variableDataType=="TEXT" ~ "text",
+                      variableDataType=="DATE" ~ "date"
+                      )#END CASE_WHEN
+          ) #END MUTATE
+  traitlist <- traitlist %>% dplyr::mutate(variableDataType=variableDataType2) %>% dplyr::select(-variableDataType2)
+  
+}
+
+#' Mutate variable validation attribute for KDSmart mobile application
+#' 
+#' @description Mutate and assign in variableValidation attribute all the kdsmart validations according to the type of variable (DECIMAL, INTEGER, NUMERIC,DATE,TEXT)
+#' @param traitlist data.frame trait list data
+#' @export
+#' 
+mutate_variable_validation_odk <- function(traitlist){
+  
+  traitlist <- traitlist%>% 
+    as_tibble() %>% #as tibble data structure
+    mutate(variableValidation="") %>% #all as character
+    mutate(variableValidation=case_when(
+      variableDataType=="DECIMAL" ~ paste0("(. >= ", "'",variableLowerLimit,"')", " and ", "(. <= ", "'",  variableUpperLimit, "')"),
+      variableDataType=="INTEGER" ~  paste0("(. >= ", "'",variableLowerLimit,"')", " and ", "(. <= ", "'",  variableUpperLimit, "')"),
+      variableDataType=="CATEGORICAL" ~ "" ,
+      variableDataType=="TEXT" ~ "",
+      variableDataType=="DATE" ~ ""
+    )#END CASE_WHEN
+    )#END MUTATE
+}
+
 
 #' Mutate variable names for concatenation of variables and units
 #' 
@@ -56,7 +101,7 @@ mutate_timming_values <- function(traitlist){
 #' @importFrom dplyr mutate as_tibble case_when select
 #' @export
 
-  mutate_variable_name <- function(traitlist){
+mutate_variable_name <- function(traitlist){
   
   #Variable Name
   traitlist <- traitlist%>% 
@@ -287,10 +332,10 @@ agro_to_fbapp <- function(traitlist, dictionary){
   
   traitlist_names <- names(traitlist)
   dictionary <- dictionary %>% 
-    dplyr::filter(!is.na(fbapp)) %>% 
-    dplyr::filter(DbAttributes %in%  traitlist_names) %>%  
-    dplyr::select(DbAttributes, fbapp) %>% 
-    as.data.frame(stringsAsFactors=FALSE)   
+                          dplyr::filter(!is.na(fbapp)) %>% 
+                          dplyr::filter(DbAttributes %in%  traitlist_names) %>%  
+                          dplyr::select(DbAttributes, fbapp) %>% 
+                          as.data.frame(stringsAsFactors=FALSE)   
   
   
   db_attributes <-  dictionary$DbAttributes 
@@ -300,6 +345,127 @@ agro_to_fbapp <- function(traitlist, dictionary){
   traitlist
   
 }
+
+#' Convert from AgroFIMS format to ODK survey - trait list format
+#' 
+#' @param traitlist data.frame table of al the list of traits
+#' @param dictionary data.frame dictionary of all the equivalences between AgroFIMS and mobile apps attributes
+#' @importFrom dplyr select filter
+#' @export
+#'  
+agro_to_odk_survey <- function(traitlist, dictionary){
+  
+  traitlist_names <- names(traitlist)
+  dictionary <- dictionary %>% 
+                          dplyr::filter(!is.na(odk)) %>% 
+                          dplyr::filter(DbAttributes %in%  traitlist_names) %>%
+                          #dplyr::arrange(odk) %>%
+                          dplyr::select(DbAttributes, odk) %>% 
+                          as.data.frame(stringsAsFactors=FALSE)   
+  
+  db_attributes <-  dictionary$DbAttributes 
+  
+  traitlist <- traitlist[, db_attributes]
+  names(traitlist) <-  dictionary$odk
+  #Aditional columns
+  traitlist$name <- traitlist$`label::English`#"] #add name column
+  #remove special characters and swap for introduce "_"
+  traitlist$name <- stringr::str_replace_all(traitlist$name, pattern = "[[:punct:]]"  ,replacement = "_")
+  traitlist$name <- stringr::str_replace_all(traitlist$name, pattern = "[[:space:]]"  ,replacement = "_")
+  traitlist$name <- stringr::str_replace_all(traitlist$name, pattern = "°"  ,replacement = "_")
+  
+  traitlist$`label::English` <- stringr::str_replace_all(traitlist$`label::English`, pattern = "[[:punct:]]"  ,replacement = "_")
+  traitlist$`label::English` <- stringr::str_replace_all(traitlist$`label::English`, pattern = "[[:space:]]"  ,replacement = "_")
+  traitlist$`label::English` <- stringr::str_replace_all( traitlist$`label::English`, pattern = "°"  ,replacement = "_")
+  
+  #appeareance 
+  traitlist$appearance <- ""
+  return(traitlist)
+}
+
+#' Convert from AgroFIMS format to ODK choices description
+#' 
+#' @description convert AgroFIMS trait list data to ODK choices-sheet format
+#' @param traitlist data.frame table of al the list of traits
+#' @param dictionary data.frame dictionary of all the equivalences between AgroFIMS and mobile apps attributes
+#' @importFrom dplyr select filter
+#' @importFrom data.table rbindlist
+#' @export
+#' 
+agro_to_odk_choices <- function(traitlist){
+  
+  traitlist <-  traitlist %>% dplyr::filter(variableDataType=="CATEGORICAL")  
+  if(nrow(traitlist)>0){
+    
+    list_name <- categorical_levels <- vector(mode="character",nrow(traitlist))
+    out <- vector(mode="list")
+    for(i in 1:nrow(traitlist)){
+      list_name <-  tolower(traitlist$variableName[i])
+      categorical_levels <- traitlist$variableCategory[i] %>% strsplit("\\|")
+      categorical_levels <- categorical_levels[[1]]
+      out[[i]] <- data.frame(list_name =list_name, categorical_levels=categorical_levels)  
+    }
+    out <- data.table::rbindlist(out) %>% as.data.frame(stringsAsFactors=FALSE)
+    out <- out %>% dplyr::mutate(label=categorical_levels )
+    names(out) <- c("list name", "name", "label::English")
+    return(out)
+  } else{
+    out <- data.frame()
+  } 
+  return(out)
+}  
+
+#' Create ODK settings structure
+#' @param expsiteid character experiment site Id
+#' @export
+#' 
+odk_settings_structure <- function(expsiteId="DS92390CMNHGTO"){
+  
+  out <- data.frame(
+                    form_title ="AgroFIMS_group_looped",
+                    form_id = paste0("build_AgroFIMS-group-looped_",expsiteId),
+                    public_key	= "",
+                    submission_url = "",
+                    instance_name = "",
+                    stringsAsFactors = FALSE
+                   )
+  return(out)
+}
+
+
+
+
+#' Create ODK survey structures for only one row rules
+#' 
+#' @param type character ODK type attribute
+#' @param name character ODK name attribute
+#' @param label character ODK label attribute
+#' @param hint character ODK hint attribute
+#' @param read_only character ODK read_only attribute
+#' @param constraint character ODK constraint attribute
+#' @param appeareance character ODK constraint appeareance
+#' @export
+#' 
+odk_survey_structure <- function(type="", name="", label="", hint="", 
+                                 read_only="", constraint="", appearance=""){
+  
+  odk_list <- list(
+    type= type,
+    name = name,
+    label = label,
+    hint = hint,
+    read_only = read_only,
+    constraint	= constraint,
+    appearance =  appearance
+  )
+  out <- data.frame(odk_list)
+  headers_odk <- c("type","name","label::English", "hint::English",	
+                   "read_only","constraint", "appearance") 
+  names(out) <- headers_odk
+  return(out)
+}
+
+  
 
 #' Create Field Book App template
 #' 

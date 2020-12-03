@@ -82,17 +82,17 @@ get_agrofims_traitlist <- function(expsiteId=NULL,
       )
 
     traitlist_dt <- traitlist_dt %>% 
-      dplyr::mutate(variableLevel = 
-                      case_when(
-                        singularity=="management_practices" & measurement=="Other"~ "Plot",
-                        TRUE~variableLevel
-                      )
+                        dplyr::mutate(variableLevel = 
+                                    case_when(
+                                      singularity=="management_practices" & measurement=="Other"~ "Plot",
+                                      TRUE~variableLevel
+                                    )
       )
-        
+    
     traitlist_dt <- traitlist_dt %>% 
                         dplyr::mutate(measurement = 
                                         case_when(
-                                                  singularity=="management_practices" & measurement=="Other"~ valueother,
+                                                  singularity=="management_practices" & measurement=="Other"~ as.character(valueother),
                                                   TRUE~measurement
                                                   )
                         )

@@ -2,7 +2,7 @@
 % Please edit documentation in R/mobile_formats.R
 \name{mutate_timming_values}
 \alias{mutate_timming_values}
-\title{Mutate timiing values in trait list tables}
+\title{Mutate timing values in trait list tables}
 \usage{
 mutate_timming_values(traitlist)
 }
