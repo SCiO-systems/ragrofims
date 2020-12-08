@@ -10,7 +10,7 @@
 get_agrofims_traitlist <- function(expsiteId=NULL,
                                    format = "data.frame",
                                    serverURL = "https://research.cip.cgiar.org/agrofims/api/dev",
-                                   version = "/0248/r"
+                                   version = "/0345/r"
                                    ){
   
   out1 <- ag_get_cropmea_expsiteId(expsiteDbId = expsiteId,
@@ -85,7 +85,7 @@ get_agrofims_traitlist <- function(expsiteId=NULL,
                         dplyr::mutate(variableLevel = 
                                     case_when(
                                       singularity=="management_practices" & measurement=="Other"~ "Plot",
-                                      TRUE~variableLevel
+                                      TRUE~as.character(variableLevel)
                                     )
       )
     
@@ -93,7 +93,7 @@ get_agrofims_traitlist <- function(expsiteId=NULL,
                         dplyr::mutate(measurement = 
                                         case_when(
                                                   singularity=="management_practices" & measurement=="Other"~ as.character(valueother),
-                                                  TRUE~measurement
+                                                  TRUE~ as.character(measurement)
                                                   )
                         )
     

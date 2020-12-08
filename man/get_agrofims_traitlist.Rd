@@ -8,7 +8,7 @@ get_agrofims_traitlist(
   expsiteId = NULL,
   format = "data.frame",
   serverURL = "https://research.cip.cgiar.org/agrofims/api/dev",
-  version = "/0248/r"
+  version = "/0345/r"
 )
 }
 \arguments{
