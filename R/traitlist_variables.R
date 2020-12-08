@@ -89,13 +89,17 @@ get_agrofims_traitlist <- function(expsiteId=NULL,
                                     )
       )
     
+    if(is.element(el = "valueother", names(traitlist_dt)) ){
+     
     traitlist_dt <- traitlist_dt %>% 
-                        dplyr::mutate(measurement = 
-                                        case_when(
-                                                  singularity=="management_practices" & measurement=="Other"~ as.character(valueother),
-                                                  TRUE~ as.character(measurement)
-                                                  )
-                        )
+                            dplyr::mutate(measurement = 
+                                            case_when(
+                                            singularity=="management_practices" & measurement=="Other"~ as.character(valueother),
+                                        TRUE~ as.character(measurement)
+                                        )
+        )
+      
+    }
     
     traitlist_dt <- mutate_crop_names(traitlist_dt)
     #Variable Name
