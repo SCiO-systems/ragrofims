@@ -493,9 +493,10 @@ cr_fbapp <- function(design){
 #' 
 #' @param traitlist data.frame trait list table 
 #' @param protocol data.frame protocol table
+#' @param dictionary data.frame internal dictionary of attributes
 #' @export
 #' 
-agro_to_odk <- function(traitlist, protocol){
+agro_to_odk <- function(traitlist, protocol, dictionary){
   
   if(nrow(traitlist)>0){
     ### Step 1: Create protocol odk trait list / question list
