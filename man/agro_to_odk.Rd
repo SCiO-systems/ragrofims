@@ -4,12 +4,14 @@
 \alias{agro_to_odk}
 \title{Transform from AgroFIMS to ODK format}
 \usage{
-agro_to_odk(traitlist, protocol)
+agro_to_odk(traitlist, protocol, dictionary)
 }
 \arguments{
 \item{traitlist}{data.frame trait list table}
 
 \item{protocol}{data.frame protocol table}
+
+\item{dictionary}{data.frame internal dictionary of attributes}
 }
 \description{
 Transform from AgroFIMS to ODK format
