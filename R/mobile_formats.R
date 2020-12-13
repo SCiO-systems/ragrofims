@@ -488,11 +488,12 @@ cr_fbapp <- function(design){
   
 }
 
-#' Agro to ODK
+#' Transform from AgroFIMS to ODK format
+#' @description Transform from AgroFIMS to ODK format
 #' 
 #' @param traitlist data.frame trait list table 
 #' @param protocol data.frame protocol table
-#' 
+#' @export
 
 agro_to_odk <- function(traitlist, protocol){
   
