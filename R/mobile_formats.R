@@ -494,7 +494,7 @@ cr_fbapp <- function(design){
 #' @param traitlist data.frame trait list table 
 #' @param protocol data.frame protocol table
 #' @export
-
+#' 
 agro_to_odk <- function(traitlist, protocol){
   
   if(nrow(traitlist)>0){
