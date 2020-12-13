@@ -488,4 +488,79 @@ cr_fbapp <- function(design){
   
 }
 
+#' Agro to ODK
+#' 
+#' @param traitlist data.frame trait list table 
+#' @param protocol data.frame protocol table
+#' 
+
+agro_to_odk <- function(traitlist, protocol){
+  
+  if(nrow(traitlist)>0){
+    ### Step 1: Create protocol odk trait list / question list
+    label <-  paste(protocol$variableName, protocol$value, collapse = "; ")
+    
+    if(nrow(protocol)>0){
+      odk_survey_protocol <- odk_survey_structure(type="text", name="Protocol", 
+                                                  label = label, hint= "",
+                                                  read_only = "yes", constraint = "",
+                                                  appearance = ""
+      )
+    } else{
+      odk_survey_protocol <- data.frame()
+    }
+    
+    #Begin repeated group survey sheet
+    odk_survey_begin_group <- odk_survey_structure(type="begin repeat", name="Plot", 
+                                                   label="Plot", hint = "", 
+                                                   read_only = "", constraint="", 
+                                                   appearance=""
+    )
+    
+    # Traitlist survey sheet
+    odk_traitlist <- mutate_variable_validation_odk(traitlist)
+    odk_traitlist <- mutate_variable_type_odk(odk_traitlist)
+    odk_survey_traitlist <- agro_to_odk_survey(odk_traitlist, dictionary)
+    
+    
+    
+    #End repeated group survey sheet
+    odk_survey_end_group <- odk_survey_structure(type="end repeat", name="", 
+                                                 label="", hint = "", 
+                                                 read_only = "", constraint="", 
+                                                 appearance=""
+    )
+    
+    
+    odk_survey_data <- data.table::rbindlist(list(odk_survey_protocol, 
+                                                  odk_survey_begin_group , 
+                                                  odk_survey_traitlist, 
+                                                  odk_survey_end_group), 
+                                             fill = TRUE) %>% 
+      as.data.frame(stringsAsFactors=FALSE)
+    
+    
+    #### ODK choices sheet ############################################################
+    odk_choices_metadata <- agro_to_odk_choices(traitlist)
+    
+    #### ODK settings sheet ###########################################################
+    odk_settings_metadata <- odk_settings_structure("odk_structure")
+    
+    out <- list(odk_settings_metadata=odk_settings_metadata,
+                odk_choices_metadata=odk_choices_metadata,
+                odk_survey_data=odk_survey_data,
+                odk_survey_traitlist=odk_survey_traitlist,
+                odk_survey_begin_group=odk_survey_begin_group,
+                odk_survey_protocol= odk_survey_protocol
+                )
+    
+  } else{
+    out <- print("no hay nada")
+  }    
+  return(out)
+  #Metadata sheet ######################################################
+  
+  #filename <- "D:/omar/Github/ragrofims/mobile/odk/test_odk.xlsx"
+  
+}  
 
