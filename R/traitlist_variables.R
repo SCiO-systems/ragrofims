@@ -47,6 +47,7 @@ get_agrofims_traitlist <- function(expsiteId=NULL,
     #Mutate crop and new 'other crop' names
     
     traitlist_dt <- traitlist_dt %>% 
+                                dplyr::mutate(parametermeasured = as.character(parametermeasured)) %>%  
                                 dplyr::mutate(parametermeasured = 
                                              case_when(singularity=="crop_phenology"~ group,
                                                    singularity=="management_practices"~ group,
@@ -57,12 +58,12 @@ get_agrofims_traitlist <- function(expsiteId=NULL,
                                               )
     #In case user select other management practices, it change to the new name
     traitlist_dt <- traitlist_dt %>% 
-      dplyr::mutate(variableDataType = 
-                      case_when(
-                        singularity=="management_practices" & variableDataType=="OTHER"~ "DECIMAL",
-                        TRUE~variableDataType
-                      )
-      )
+                                    dplyr::mutate(variableDataType = 
+                                                    case_when(
+                                                      singularity=="management_practices" & variableDataType=="OTHER"~ "DECIMAL",
+                                                      TRUE~variableDataType
+                                                    )
+                                    )
     
     traitlist_dt <- traitlist_dt %>% 
       dplyr::mutate(variableLowerLimit = 
