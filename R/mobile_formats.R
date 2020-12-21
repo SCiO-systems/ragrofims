@@ -504,7 +504,7 @@ agro_to_odk <- function(traitlist, protocol, dictionary){
     
     if(nrow(protocol)>0){
       odk_survey_protocol <- odk_survey_structure(type="text", name="Protocol", 
-                                                  label = label, hint= "",
+                                                  label = label, hint= "nohint",
                                                   read_only = "yes", constraint = "",
                                                   appearance = ""
       )
