@@ -4,10 +4,10 @@
 \alias{odk_settings_structure}
 \title{Create ODK settings structure}
 \usage{
-odk_settings_structure(expsiteId = "DS92390CMNHGTO")
+odk_settings_structure(filename = "XXX-1234-4852")
 }
 \arguments{
-\item{expsiteid}{character experiment site Id}
+\item{filename}{AgroFIMS file name}
 }
 \description{
 Create ODK settings structure

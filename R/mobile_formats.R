@@ -416,14 +416,16 @@ agro_to_odk_choices <- function(traitlist){
 }  
 
 #' Create ODK settings structure
-#' @param expsiteid character experiment site Id
+#  @param expsiteid character experiment site Id
+#' @param filename AgroFIMS file name
 #' @export
 #' 
-odk_settings_structure <- function(expsiteId="DS92390CMNHGTO"){
+odk_settings_structure <- function(filename="XXX-1234-4852" ) {#, expsiteId="DS92390CMNHGTO"){
   
   out <- data.frame(
-                    form_title ="AgroFIMS_group_looped",
-                    form_id = paste0("build_AgroFIMS-group-looped_",expsiteId),
+                    form_title = filename,
+                    #form_id = paste0("build_AgroFIMS-group-looped_", filename),
+                    form_id = filename,
                     public_key	= "",
                     submission_url = "",
                     instance_name = "",
@@ -494,9 +496,10 @@ cr_fbapp <- function(design){
 #' @param traitlist data.frame trait list table 
 #' @param protocol data.frame protocol table
 #' @param dictionary data.frame internal dictionary of attributes
+#' @param filename AgroFIMS file name
 #' @export
 #' 
-agro_to_odk <- function(traitlist, protocol, dictionary){
+agro_to_odk <- function(traitlist, protocol, dictionary, filename){
   
   if(nrow(traitlist)>0){
     ### Step 1: Create protocol odk trait list / question list
@@ -546,7 +549,7 @@ agro_to_odk <- function(traitlist, protocol, dictionary){
     odk_choices_metadata <- agro_to_odk_choices(traitlist)
     
     #### ODK settings sheet ###########################################################
-    odk_settings_metadata <- odk_settings_structure("odk_structure")
+    odk_settings_metadata <- odk_settings_structure(filename = filename)
     
     out <- list(odk_settings_metadata=odk_settings_metadata,
                 odk_choices_metadata=odk_choices_metadata,
@@ -561,8 +564,6 @@ agro_to_odk <- function(traitlist, protocol, dictionary){
   }    
   return(out)
   #Metadata sheet ######################################################
-  
-  #filename <- "D:/omar/Github/ragrofims/mobile/odk/test_odk.xlsx"
-  
+
 }  
 
