@@ -160,25 +160,25 @@ mutate_variable_validation_kdsmart <- function(traitlist){
 }
 
 
-#' Mutate variable validation attribute for KDSmart mobile application
+#' Mutate variable validation for categorical variables for KDSmart mobile application
 #' 
 #' @description mutate validation rules according different types of inputs in order to complaint with Field Book App.
 #' @param traitlist data.frame trait list data
 #' @export
 #' 
-mutate_variable_validation_fbapp <- function(traitlist){
+mutate_categorical_validation_fbapp <- function(traitlist){
   
-  traitlist <- traitlist%>% 
+  traitlist <- traitlist %>% 
     as_tibble() %>% #as tibble data structure
     mutate(variableValidation="") %>% #all as character
     mutate(variableValidation=case_when(
-      variableDataType=="DECIMAL" ~ paste0(variableLowerLimit ," <= x <= ", variableUpperLimit),
-      variableDataType=="INTEGER" ~  paste0(variableLowerLimit ," <= x <= ", variableUpperLimit),
-      variableDataType=="CATEGORICAL" ~ as.character(variableCategory),
-      variableDataType=="TEXT" ~ "TEXT",
-      variableDataType=="DATE" ~ "DATE"
-    )#END CASE_WHEN
+      variableDataType=="CATEGORICAL" ~ stringr::str_replace_all(as.character(variableCategory), "\\|","/"),
+        TRUE ~ variableCategory       
+      )#END CASE_WHEN
     )#END MUTATE
+   
+  traitlist <- traitlist %>% mutate(variableCategory=variableValidation)
+  
 }
 
 
@@ -330,17 +330,21 @@ mutate_format_fbapp <- function(traitlist){
 #'  
 agro_to_fbapp <- function(traitlist, dictionary){
   
+  
+  #traitlist <- mutate_categorical_validation_fbapp(traitlist)
+  
   traitlist_names <- names(traitlist)
   dictionary <- dictionary %>% 
                           dplyr::filter(!is.na(fbapp)) %>% 
-                          dplyr::filter(DbAttributes %in%  traitlist_names) %>%  
+                          dplyr::filter(DbAttributes %in%  traitlist_names) %>%
+                          dplyr::arrange(fbapp_order) %>% 
                           dplyr::select(DbAttributes, fbapp) %>% 
                           as.data.frame(stringsAsFactors=FALSE)   
   
   
   db_attributes <-  dictionary$DbAttributes 
-  
   traitlist <- traitlist[, db_attributes]
+  
   names(traitlist) <-  dictionary$fbapp
   traitlist
   
