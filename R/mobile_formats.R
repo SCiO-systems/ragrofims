@@ -173,11 +173,11 @@ mutate_categorical_validation_fbapp <- function(traitlist){
     mutate(variableValidation="") %>% #all as character
     mutate(variableValidation=case_when(
       variableDataType=="CATEGORICAL" ~ stringr::str_replace_all(as.character(variableCategory), "\\|","/"),
-        TRUE ~ variableCategory       
+        TRUE ~ as.character(variableCategory)       
       )#END CASE_WHEN
     )#END MUTATE
    
-  traitlist <- traitlist %>% mutate(variableCategory=variableValidation)
+  traitlist <- traitlist %>% mutate(variableCategory=as.character(variableValidation))
   
 }
 
@@ -208,7 +208,6 @@ mutate_nummeasurement_phenology <- function(traitlist){
       )
   traitlist
 } 
-
 
 #' Flatten management practices table to retrieve actual plan evaluations (in trait list)
 #' 
