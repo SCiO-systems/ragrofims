@@ -76,13 +76,15 @@ get_agrofims_designnut <- function(expsiteId= NULL,
                                     version = "/0291/r"
 )
 {
-  
+  print("INSIDE NUTRIENT")
   nutrient <- ragapi::ag_get_edsfert_expsiteId(
     expsiteDbId = expsiteId,
     format = format,
     serverURL = serverURL,
     version = version
   )
+  print("AFTER RAGAPI")
+  print(nutrient)
   
   if(nrow(nutrient)==0){
     out <- data.frame()
